@@ -1,9 +1,8 @@
 /**
  * Fiducia — Primary Frontend Application Router
- * Enforces strict Firebase Authentication Route Protection:
- * - Only authenticated SEBI RIAs (Email/Password, Google OAuth, or Firebase Guest Session)
- *   can access `/workbench` or `/intake`.
- * - Unauthenticated users attempting to access `/workbench` or `/intake` are redirected to `/auth`.
+ * - Scopes client folios strictly per authenticated Firebase user UID (`fiducia_folios_${uid}`).
+ * - Every new user or new Guest session starts with a 100% fresh, empty workspace (`[]`).
+ * - Provides a 1-click handler in the top bar to populate (or clear) the 3 sample client folios.
  */
 
 import React, { useState, useEffect } from 'react';
@@ -23,11 +22,10 @@ import {
   User,
 } from './services/firebaseClient';
 
-const STORAGE_KEY = 'fiducia_client_folios_v1';
-
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [authChecking, setAuthChecking] = useState<boolean>(true);
+  const [folios, setFolios] = useState<ClientFolioRecord[]>([]);
 
   useEffect(() => {
     const auth = getFirebaseAuth();
@@ -37,42 +35,66 @@ export default function App() {
     }
     const unsub = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
+      if (user) {
+        try {
+          const userScopedKey = `fiducia_folios_${user.uid}`;
+          const saved = localStorage.getItem(userScopedKey);
+          if (saved) {
+            const parsed = JSON.parse(saved) as ClientFolioRecord[];
+            if (Array.isArray(parsed)) {
+              setFolios(parsed);
+            } else {
+              setFolios([]);
+            }
+          } else {
+            // Brand new user or new guest session always starts 100% fresh and empty
+            setFolios([]);
+          }
+        } catch {
+          setFolios([]);
+        }
+      } else {
+        setFolios([]);
+      }
       setAuthChecking(false);
     });
     return () => unsub();
   }, []);
 
-  const [folios, setFolios] = useState<ClientFolioRecord[]>(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsed = JSON.parse(saved) as ClientFolioRecord[];
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
-        }
+  const persistUserFolios = (nextFolios: ClientFolioRecord[]) => {
+    setFolios(nextFolios);
+    if (currentUser) {
+      try {
+        localStorage.setItem(
+          `fiducia_folios_${currentUser.uid}`,
+          JSON.stringify(nextFolios)
+        );
+      } catch {
+        // Ignore storage quota errors
       }
-    } catch {
-      // Fallback to initial folios
     }
-    return INITIAL_CLIENT_FOLIOS;
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(folios));
-    } catch {
-      // Ignore storage quota errors
-    }
-  }, [folios]);
+  };
 
   const handleUpdateFolio = (updated: ClientFolioRecord) => {
-    setFolios((prev) =>
-      prev.map((f) => (f.id === updated.id ? updated : f))
+    persistUserFolios(
+      folios.map((f) => (f.id === updated.id ? updated : f))
     );
   };
 
   const handleAddClientFolio = (newFolio: ClientFolioRecord) => {
-    setFolios((prev) => [newFolio, ...prev]);
+    persistUserFolios([newFolio, ...folios]);
+  };
+
+  const handleLoadSampleFolios = () => {
+    // Deep clone the 3 locked hackathon personas so slider mutations are fresh
+    const clonedSamples: ClientFolioRecord[] = JSON.parse(
+      JSON.stringify(INITIAL_CLIENT_FOLIOS)
+    );
+    persistUserFolios(clonedSamples);
+  };
+
+  const handleClearAllFolios = () => {
+    persistUserFolios([]);
   };
 
   if (authChecking) {
@@ -115,7 +137,12 @@ export default function App() {
         path="/workbench"
         element={
           currentUser ? (
-            <WorkbenchPage folios={folios} onUpdateFolio={handleUpdateFolio} />
+            <WorkbenchPage
+              folios={folios}
+              onUpdateFolio={handleUpdateFolio}
+              onLoadSampleFolios={handleLoadSampleFolios}
+              onClearAllFolios={handleClearAllFolios}
+            />
           ) : (
             <Navigate to="/auth" replace />
           )
