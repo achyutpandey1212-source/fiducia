@@ -37,6 +37,10 @@ import {
   Sparkles,
   Database,
 } from 'lucide-react';
+import {
+  ClientDossierBody,
+  ClientDossierModal,
+} from '../components/ui/ClientDossierModal';
 
 interface WorkbenchPageProps {
   folios: ClientFolioRecord[];
@@ -108,6 +112,7 @@ export default function WorkbenchPage({
   const [simulate2020Crash, setSimulate2020Crash] = useState<boolean>(true);
   const [inspectorSearch, setInspectorSearch] = useState<string>('');
   const [copiedSeal, setCopiedSeal] = useState<boolean>(false);
+  const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
 
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const sebiRegNo =
@@ -216,7 +221,7 @@ export default function WorkbenchPage({
         customEquityOverridePct: null,
       };
       const cleanEval = computeLiveWorkspaceEvaluation(cleanFolio);
-      const signedTimestampUtc = new Date().toISOString();
+      let signedTimestampUtc = new Date().toISOString();
 
       const canonicalPayload = JSON.stringify({
         folio_id: cleanFolio.id,
@@ -229,7 +234,34 @@ export default function WorkbenchPage({
         model_version: 'fiducia-v1.0.0',
       });
 
-      const sha256Hex = await computeBrowserSha256Hex(canonicalPayload);
+      let sha256Hex = await computeBrowserSha256Hex(canonicalPayload);
+
+      // Sync immutable SHA-256 signature with backend WORM audit ledger (Phase 4)
+      const uid = firebaseUser?.uid || 'adviser_default';
+      try {
+        const res = await fetch(`/api/v1/folios/${uid}/${cleanFolio.id}/sign`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clientName: cleanFolio.clientName,
+            riaSebiRegistration: sebiRegNo,
+            effectiveRiskScore: cleanEval.effectiveRiskScore,
+            assetAllocation: cleanEval.activeAllocation,
+            recommendedFundIsins: cleanEval.basket.map((b) => b.fund.isin),
+            folioSnapshot: cleanFolio,
+          }),
+        });
+        if (res.ok) {
+          const data = (await res.json()) as {
+            sha256DigitalSeal?: string;
+            signedTimestampUtc?: string;
+          };
+          if (data.sha256DigitalSeal) sha256Hex = data.sha256DigitalSeal;
+          if (data.signedTimestampUtc) signedTimestampUtc = data.signedTimestampUtc;
+        }
+      } catch {
+        // Retain Web Crypto API SHA-256 seal if backend is offline
+      }
 
       onUpdateFolio({
         ...cleanFolio,
@@ -372,11 +404,12 @@ export default function WorkbenchPage({
   };
 
   return (
-    <div className="ag-workspace-root h-screen w-screen overflow-hidden flex flex-col font-manrope">
-      {/* =====================================================================
-          TOP APPLICATION BAR (44px)
-      ===================================================================== */}
-      <header className="ag-topbar h-[44px] shrink-0 px-3.5 flex items-center justify-between text-[12.5px] select-none">
+    <>
+      <div className="ag-screen-only ag-workspace-root h-screen w-screen overflow-hidden flex flex-col font-manrope">
+        {/* =====================================================================
+            TOP APPLICATION BAR (44px)
+        ===================================================================== */}
+        <header className="ag-topbar h-[44px] shrink-0 px-3.5 flex items-center justify-between text-[12.5px] select-none">
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-1.5">
             <Link
@@ -461,10 +494,10 @@ export default function WorkbenchPage({
               <button
                 type="button"
                 disabled={!isSignedAndValid}
-                onClick={() => window.print()}
+                onClick={() => setShowDossierModal(true)}
                 title={
                   isSignedAndValid
-                    ? 'Export Signed Client PDF Dossier'
+                    ? 'Preview & Export Signed Client PDF Dossier'
                     : 'Approve and sign the plan first to enable export'
                 }
                 className="ag-soft-pill px-3 py-1 rounded-full text-[12px] font-medium disabled:opacity-40 disabled:cursor-not-allowed"
@@ -1290,7 +1323,7 @@ export default function WorkbenchPage({
                       <button
                         type="button"
                         disabled={!isSignedAndValid}
-                        onClick={() => window.print()}
+                        onClick={() => setShowDossierModal(true)}
                         className="ag-row-inactive w-full px-2.5 py-1.5 rounded-lg disabled:opacity-40 flex items-center gap-2.5 transition"
                       >
                         <FileText className="w-3.5 h-3.5 text-[#636870] shrink-0" />
@@ -1383,6 +1416,29 @@ export default function WorkbenchPage({
           </>
         )}
       </div>
-    </div>
+      </div>
+
+      {/* PHASE 4: On-Screen Client Suitability Dossier Modal & A4 Print Output */}
+      {activeFolio && evaluation && (
+        <>
+          <ClientDossierModal
+            isOpen={showDossierModal}
+            onClose={() => setShowDossierModal(false)}
+            folio={activeFolio}
+            evaluation={evaluation}
+            sebiRegNo={sebiRegNo}
+            adviserEmail={firebaseUser?.email}
+          />
+          <div className="fiducia-print-dossier">
+            <ClientDossierBody
+              folio={activeFolio}
+              evaluation={evaluation}
+              sebiRegNo={sebiRegNo}
+              adviserEmail={firebaseUser?.email}
+            />
+          </div>
+        </>
+      )}
+    </>
   );
 }

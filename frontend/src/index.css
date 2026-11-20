@@ -296,3 +296,40 @@ input[type='range'].ag-slider::-moz-range-thumb {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
+
+/* ============================================================================
+   PHASE 4: CLIENT SUITABILITY PDF DOSSIER PRINT STYLESHEET (@media print)
+   Hides the dark 3-pane Antigravity IDE chrome and prints ONLY the crisp,
+   white, client-ready SEBI Reg 19 Signed Fiduciary Suitability Dossier.
+============================================================================ */
+
+.fiducia-print-dossier {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm;
+  }
+
+  html,
+  body {
+    background-color: #FFFFFF !important;
+    color: #111827 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  .ag-screen-only {
+    display: none !important;
+  }
+
+  .fiducia-print-dossier {
+    display: block !important;
+    background-color: #FFFFFF !important;
+    color: #111827 !important;
+    width: 100% !important;
+    font-family: 'Manrope', sans-serif;
+  }
+}

@@ -33,6 +33,13 @@ import { STATUTORY_FACTSHEET_CHUNKS } from './services/ai/factsheetCorpus.js';
 import { getAiGatewayTelemetry } from './services/ai/aiGateway.js';
 import { queryFiduciaryRagPipeline } from './services/ai/ragEngine.js';
 import { generateFiduciaryPlanMemo } from './services/ai/planNarrator.js';
+import {
+  listFoliosForAdviser,
+  upsertClientFolio,
+  clearFoliosForAdviser,
+  appendImmutableAuditSeal,
+  listImmutableAuditLedger,
+} from './services/storage/folioRepository.js';
 
 dotenv.config();
 
@@ -332,4 +339,129 @@ app.get('/api/v1/admin/telemetry', (_req, res) => {
     aiGateway: aiTelemetry,
     timestampUtc: new Date().toISOString(),
   });
+});
+
+/**
+ * 8. Phase 4: Adviser Client Folio Cloud Persistence & SEBI Reg 19 Immutable WORM Audit Ledger
+ */
+app.get('/api/v1/folios/:adviserUid', async (req, res) => {
+  try {
+    const folios = await listFoliosForAdviser(req.params.adviserUid);
+    res.status(200).json({
+      status: 'success',
+      count: folios.length,
+      folios,
+    });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: (err as Error).message });
+  }
+});
+
+app.post('/api/v1/folios/:adviserUid', async (req, res) => {
+  try {
+    const saved = await upsertClientFolio(req.params.adviserUid, req.body);
+    res.status(200).json({
+      status: 'success',
+      folio: saved,
+    });
+  } catch (err) {
+    res.status(400).json({ status: 'error', message: (err as Error).message });
+  }
+});
+
+app.delete('/api/v1/folios/:adviserUid', async (req, res) => {
+  try {
+    await clearFoliosForAdviser(req.params.adviserUid);
+    res.status(200).json({ status: 'success' });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: (err as Error).message });
+  }
+});
+
+app.post('/api/v1/folios/:adviserUid/:folioId/sign', async (req, res) => {
+  try {
+    const { adviserUid, folioId } = req.params;
+    const {
+      clientName = 'Client Household',
+      riaSebiRegistration = 'INA000018492',
+      effectiveRiskScore = 50,
+      assetAllocation = {
+        equityPct: 50,
+        debtPct: 35,
+        liquidArbitragePct: 10,
+        goldPct: 5,
+      },
+      recommendedFundIsins = ['INF789F01XA0', 'INF879O01027'],
+      folioSnapshot,
+    } = req.body;
+
+    const signedTimestampUtc = new Date().toISOString();
+    const canonicalPayload = {
+      plan_id: folioId,
+      client_id: clientName,
+      ria_sebi_registration: riaSebiRegistration,
+      signed_timestamp_utc: signedTimestampUtc,
+      effective_risk_score: effectiveRiskScore,
+      asset_allocation: {
+        equity_pct: assetAllocation.equityPct,
+        debt_pct: assetAllocation.debtPct,
+        liquid_pct: assetAllocation.liquidArbitragePct,
+        gold_pct: assetAllocation.goldPct,
+      },
+      recommended_fund_isin: recommendedFundIsins,
+      model_version: process.env.APP_VERSION || 'fiducia-v1.0.0',
+    };
+
+    const { canonicalJson, sha256Hex } = generateSha256DigitalSeal(canonicalPayload);
+
+    const auditEntry = await appendImmutableAuditSeal({
+      auditId: `audit_${Date.now().toString(36)}`,
+      folioId,
+      adviserUid,
+      riaSebiRegistration,
+      clientName,
+      signedTimestampUtc,
+      effectiveRiskScore,
+      assetAllocation,
+      recommendedFundIsins,
+      sha256DigitalSeal: sha256Hex,
+      canonicalPayloadJson: canonicalJson,
+    });
+
+    if (folioSnapshot) {
+      await upsertClientFolio(adviserUid, {
+        ...folioSnapshot,
+        id: folioId,
+        folderStatus: 'APPROVED_SIGNED',
+        sha256DigitalSeal: sha256Hex,
+        signedAtUtc: signedTimestampUtc,
+        riaSebiRegistration,
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      folioId,
+      sha256DigitalSeal: sha256Hex,
+      signedTimestampUtc,
+      riaSebiRegistration,
+      auditEntry,
+    });
+  } catch (err) {
+    res.status(400).json({ status: 'error', message: (err as Error).message });
+  }
+});
+
+app.get('/api/v1/audit-ledger', async (req, res) => {
+  try {
+    const adviserUid = req.query.adviserUid as string | undefined;
+    const entries = await listImmutableAuditLedger(adviserUid);
+    res.status(200).json({
+      status: 'success',
+      count: entries.length,
+      entries,
+    });
+  } catch (err) {
+    res.status(500).json({ status: 'error', message: (err as Error).message });
+  }
 });

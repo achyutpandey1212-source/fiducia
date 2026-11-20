@@ -75,14 +75,29 @@ export default function App() {
     }
   };
 
+  const syncFolioToBackend = async (folio: ClientFolioRecord) => {
+    if (!currentUser) return;
+    try {
+      await fetch(`/api/v1/folios/${currentUser.uid}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(folio),
+      });
+    } catch {
+      // Offline / frontend-only resilience
+    }
+  };
+
   const handleUpdateFolio = (updated: ClientFolioRecord) => {
     persistUserFolios(
       folios.map((f) => (f.id === updated.id ? updated : f))
     );
+    void syncFolioToBackend(updated);
   };
 
   const handleAddClientFolio = (newFolio: ClientFolioRecord) => {
     persistUserFolios([newFolio, ...folios]);
+    void syncFolioToBackend(newFolio);
   };
 
   const handleLoadSampleFolios = () => {
@@ -91,10 +106,18 @@ export default function App() {
       JSON.stringify(INITIAL_CLIENT_FOLIOS)
     );
     persistUserFolios(clonedSamples);
+    clonedSamples.forEach((sample) => {
+      void syncFolioToBackend(sample);
+    });
   };
 
   const handleClearAllFolios = () => {
     persistUserFolios([]);
+    if (currentUser) {
+      fetch(`/api/v1/folios/${currentUser.uid}`, { method: 'DELETE' }).catch(
+        () => {}
+      );
+    }
   };
 
   if (authChecking) {
