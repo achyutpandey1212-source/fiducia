@@ -4,6 +4,7 @@ export default {
   theme: {
     extend: {
       colors: {
+        // World 1: Sheryians Editorial Public & Auth Palette
         void: '#000000',
         bento: '#080808',
         card: '#0C0C0C',
@@ -24,6 +25,22 @@ export default {
         },
         bentoBorder: '#302C2A',
         standardBorder: '#262626',
+
+        // World 2: Antigravity Deep Slate Studio Workspace Palette
+        agCanvas: '#0E1015',
+        agSidebar: '#12141A',
+        agPanel: '#161820',
+        agPanelElevated: '#1A1D26',
+        agInput: '#1A1D26',
+        agBorder: '#252833',
+        agBorderHover: '#363A48',
+        agTextPrimary: '#FFFFFF',
+        agTextSecondary: '#9DA1AB',
+        agTextMuted: '#646875',
+        agBlue: '#1A73E8',
+        agBlueHover: '#1557B0',
+
+        // Fiduciary Status Semantics
         fiduciarySafe: '#10B981',
         fiduciaryWarning: '#F59E0B',
         fiduciaryDanger: '#EF4444',

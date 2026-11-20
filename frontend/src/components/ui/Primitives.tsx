@@ -16,10 +16,12 @@ export const BentoCard: React.FC<BentoCardProps> = ({ children, className = '' }
 interface CreamSectionProps {
   children: React.ReactNode;
   className?: string;
+  id?: string;
 }
 
-export const CreamSection: React.FC<CreamSectionProps> = ({ children, className = '' }) => (
+export const CreamSection: React.FC<CreamSectionProps> = ({ children, className = '', id }) => (
   <section
+    id={id}
     className={`bg-cream text-inkOnCream rounded-3xl p-8 md:p-12 shadow-sm ${className}`}
   >
     {children}
