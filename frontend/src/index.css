@@ -43,6 +43,7 @@
 }
 
 :root {
+  /* World 1: Sheryians Editorial Public & Auth */
   --bg-void: #000000;
   --bg-bento: #080808;
   --bg-card: #0C0C0C;
@@ -59,10 +60,24 @@
   --status-danger: #EF4444;
   --border-bento: #302C2A;
   --border-standard: #262626;
+
+  /* World 2: Exact Pixel-Sampled Google Antigravity Color Hierarchy (Screenshot 1) */
+  --ag-bg-canvas: #0D0E11;
+  --ag-bg-sidebar: #131519;
+  --ag-bg-panel: #191C22;
+  --ag-bg-elevated: #22262F;
+  --ag-bg-hover: #1E2129;
+  --ag-bg-code: #1B2230;
+  --ag-text-code: #A5C8FF;
+  --ag-border-hairline: rgba(255, 255, 255, 0.10);
+  --ag-border-card: rgba(255, 255, 255, 0.14);
+  --ag-border-active: rgba(255, 255, 255, 0.24);
+  --ag-blue: #1A73E8;
+  --ag-blue-hover: #1864CF;
 }
 
 body {
-  background-color: #0B0C0E;
+  background-color: var(--ag-bg-canvas);
   color: #ECEEEF;
   font-family: 'Manrope', sans-serif;
   overflow-x: hidden;
@@ -73,13 +88,156 @@ body {
   border: 0.54px solid var(--border-bento);
 }
 
-/* Antigravity Ultra-Minimalist 3px Graphite Range Slider (Zero Cartoon Circles) */
+/* ============================================================================
+   ANTIGRAVITY STUDIO WORKSPACE SURFACES & COLOR HIERARCHY
+   Explicit CSS classes guarantee instant hot-reload without Vite config lag
+============================================================================ */
+
+.ag-workspace-root {
+  background-color: #0D0E11;
+  color: #ECEEEF;
+}
+
+.ag-topbar {
+  background-color: #131519;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.ag-sidebar-left {
+  background-color: #131519;
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.ag-sidebar-right {
+  background-color: #131519;
+  border-left: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+/* Slightly Greyish Shade for Panels, Prompt Box, and Code Blocks with Polished Off-White Boundary */
+.ag-panel-card {
+  background-color: #181B21;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 12px;
+}
+
+.ag-panel-header {
+  background-color: #1D2027;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.ag-prompt-dock {
+  background-color: #1A1D24;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Search Box & Text Inputs inside Workspace (Never White!) */
+.ag-search-pill {
+  background-color: #1A1D24 !important;
+  color: #ECEEEF !important;
+  border: 1px solid rgba(138, 180, 248, 0.32);
+  border-radius: 9999px;
+}
+
+.ag-search-pill:focus {
+  border-color: #1A73E8;
+  box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.20);
+}
+
+/* Soft Grey Button Pill (Like "+ New Conversation" in Antigravity) */
+.ag-soft-pill {
+  background-color: #20232B;
+  border: 1px solid rgba(255, 255, 255, 0.11);
+  color: #ECEEEF;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ag-soft-pill:hover {
+  background-color: #282C36;
+  border-color: rgba(255, 255, 255, 0.20);
+}
+
+/* Active Sidebar Row */
+.ag-row-active {
+  background-color: #22252E;
+  color: #FFFFFF;
+}
+
+.ag-row-inactive {
+  background-color: transparent;
+  color: #9DA3AE;
+}
+
+.ag-row-inactive:hover {
+  background-color: #1A1D24;
+  color: #ECEEEF;
+}
+
+/* Antigravity Blue Primary Action Button */
+.ag-btn-blue {
+  background-color: #1A73E8 !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.ag-btn-blue:hover:not(:disabled) {
+  background-color: #1864CF !important;
+}
+
+.ag-btn-blue:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Secondary Blue-Tinted Action Button */
+.ag-btn-secondary {
+  background-color: rgba(26, 115, 232, 0.14);
+  color: #8AB4F8;
+  border: 1px solid rgba(26, 115, 232, 0.35);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.ag-btn-secondary:hover:not(:disabled) {
+  background-color: rgba(26, 115, 232, 0.24);
+  border-color: rgba(26, 115, 232, 0.55);
+  color: #FFFFFF;
+}
+
+/* Inline Code Badge (Matches `localhost:5173/workbench` blue-grey pill in Screenshot 1) */
+.ag-inline-code {
+  background-color: #1B2230;
+  color: #A5C8FF;
+  border: 1px solid rgba(165, 200, 255, 0.16);
+  padding: 1px 6px;
+  border-radius: 5px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 12px;
+}
+
+/* Interactive Drag-Resize Splitter Handle */
+.ag-resizer {
+  width: 5px;
+  cursor: col-resize;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+  z-index: 30;
+  flex-shrink: 0;
+}
+
+.ag-resizer:hover,
+.ag-resizer.is-dragging {
+  background-color: #1A73E8;
+}
+
+/* Antigravity Minimalist Range Slider with Blue Active Thumb */
 input[type='range'].ag-slider {
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 3px;
-  background: #252830;
+  height: 4px;
+  background: #2A2E39;
   border-radius: 9999px;
   outline: none;
   cursor: pointer;
@@ -88,42 +246,39 @@ input[type='range'].ag-slider {
 input[type='range'].ag-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 11px;
-  height: 11px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  background: #D1D5DB;
-  border: 1.5px solid #0B0C0E;
+  background: #1A73E8;
+  border: 2px solid #ECEEEF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   cursor: grab;
   transition: transform 0.1s ease, background-color 0.12s ease;
 }
 
 input[type='range'].ag-slider:hover::-webkit-slider-thumb {
-  background: #FFFFFF;
+  background: #3B82F6;
+  transform: scale(1.12);
 }
 
 input[type='range'].ag-slider::-webkit-slider-thumb:active {
   cursor: grabbing;
-  transform: scale(1.2);
-  background: #1A73E8;
+  transform: scale(1.22);
+  background: #60A5FA;
 }
 
 input[type='range'].ag-slider::-moz-range-thumb {
-  width: 11px;
-  height: 11px;
+  width: 13px;
+  height: 13px;
   border-radius: 50%;
-  background: #D1D5DB;
-  border: 1.5px solid #0B0C0E;
+  background: #1A73E8;
+  border: 2px solid #ECEEEF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
   cursor: grab;
   transition: transform 0.1s ease, background-color 0.12s ease;
 }
 
-input[type='range'].ag-slider::-moz-range-thumb:active {
-  cursor: grabbing;
-  transform: scale(1.2);
-  background: #1A73E8;
-}
-
-/* Ultra-Quiet Custom Scrollbar matching Antigravity */
+/* Quiet Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -134,10 +289,10 @@ input[type='range'].ag-slider::-moz-range-thumb:active {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #22252A;
+  background: rgba(255, 255, 255, 0.14);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #32363E;
+  background: rgba(255, 255, 255, 0.25);
 }
