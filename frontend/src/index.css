@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/NeueMachina-Light.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/NeueMachina-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Neue Machina';
+  src: url('/fonts/NeueMachina-Ultrabold.woff2') format('woff2');
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope-VariableFont_wght.woff2') format('woff2');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Caveat Brush';
+  src: url('/fonts/CaveatBrush-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg-void: #000000;
+  --bg-bento: #080808;
+  --bg-card: #0C0C0C;
+  --bg-elevated: #121212;
+  --bg-input: #141414;
+  --bg-glass-nav: rgba(0, 0, 0, 0.45);
+  --bg-cream: #FFF3EC;
+  --bg-cream-card: #FFE4D3;
+  --text-on-cream: #18181B;
+  --color-primary-500: #E8602E;
+  --color-primary-600: #D73A0A;
+  --status-safe: #10B981;
+  --status-warning: #F59E0B;
+  --status-danger: #EF4444;
+  --border-bento: #302C2A;
+  --border-standard: #262626;
+}
+
+body {
+  background-color: var(--bg-void);
+  color: #ffffff;
+  font-family: 'Manrope', sans-serif;
+  overflow-x: hidden;
+}
+
+.bento-surface {
+  background-color: var(--bg-bento);
+  border: 0.54px solid var(--border-bento);
+}

@@ -1,0 +1,21 @@
+{
+  "name": "fiducia-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Fiducia — Institutional Fiduciary WealthTech Platform for SEBI Registered Investment Advisers",
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "scripts": {
+    "dev:backend": "npm --workspace=backend run dev",
+    "dev:frontend": "npm --workspace=frontend run dev",
+    "build:backend": "npm --workspace=backend run build",
+    "build:frontend": "npm --workspace=frontend run build",
+    "test": "npm --workspace=backend run test",
+    "test:quant": "npm --workspace=backend run test:quant"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
