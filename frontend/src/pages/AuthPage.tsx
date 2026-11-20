@@ -1,9 +1,8 @@
 /**
- * World 1 (Sheryians Editorial Obsidian Style): Adviser Sign-In & Registration Page (/auth)
- * Uses genuine Firebase Web SDK:
- * - Email & Password Sign-In / Sign-Up
- * - 1-Tap Google OAuth
- * - Firebase Anonymous Sign-In (signInAnonymously)
+ * Adviser Authentication Portal (/auth & /signup)
+ * Unified with the Antigravity Deep Slate Studio Color Hierarchy (#0D0E11 Canvas,
+ * #181B21 Elevated Slate Card, Polished Off-White Hairline Borders, #1A73E8 Blue Action Pill)
+ * + Sheryians Neue Machina Typography & Vertical Reel Rollover Motion.
  */
 
 import React, { useState } from 'react';
@@ -18,11 +17,15 @@ import {
   signInAnonymously,
   updateProfile,
 } from '../services/firebaseClient';
-import { ShieldCheck, ArrowRight, UserCheck, Lock, Mail, BadgeCheck } from 'lucide-react';
+import { ArrowRight, UserCheck, Lock, Mail, BadgeCheck, ArrowLeft } from 'lucide-react';
 
-export default function AuthPage() {
+interface AuthPageProps {
+  initialMode?: 'SIGN_IN' | 'SIGN_UP';
+}
+
+export default function AuthPage({ initialMode = 'SIGN_IN' }: AuthPageProps) {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<'SIGN_IN' | 'SIGN_UP'>('SIGN_IN');
+  const [mode, setMode] = useState<'SIGN_IN' | 'SIGN_UP'>(initialMode);
   const [fullName, setFullName] = useState('');
   const [sebiRegNo, setSebiRegNo] = useState('INA000018492');
   const [email, setEmail] = useState('');
@@ -94,52 +97,53 @@ export default function AuthPage() {
       localStorage.setItem('fiducia_sebi_reg', sebiRegNo.trim() || 'INA000018492');
       navigate('/workbench');
     } catch (err) {
-      setErrorMsg((err as Error).message || 'Anonymous guest sign-in failed.');
+      setErrorMsg((err as Error).message || 'Guest session sign-in failed.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-void text-white flex flex-col justify-between px-4 py-8">
+    <div className="ag-workspace-root min-h-screen flex flex-col justify-between px-4 py-8 font-manrope">
       {/* Top Bar */}
       <div className="max-w-5xl w-full mx-auto flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="h-2.5 w-2.5 rounded-full bg-vermilion-500" />
-          <span className="font-machina text-lg font-bold tracking-tight">Fiducia</span>
+          <div className="w-6 h-6 rounded-md bg-[#20232B] border border-[#323642] flex items-center justify-center font-machina font-bold text-xs text-white">
+            Λ
+          </div>
+          <span className="font-machina text-base font-bold tracking-tight text-white">
+            Fiducia
+          </span>
         </Link>
+
         <Link
           to="/"
-          className="text-xs text-zinc-400 hover:text-white transition"
+          className="inline-flex items-center gap-1.5 text-xs text-[#9DA3AE] hover:text-white transition"
         >
-          ← Back to Home
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span>Back to Home</span>
         </Link>
       </div>
 
-      {/* Centered Obsidian Auth Card */}
-      <div className="w-full max-w-[430px] mx-auto my-8 bg-card border border-standardBorder rounded-2xl p-7 md:p-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#141414] border border-standardBorder text-[11px] text-zinc-300 mb-5">
-          <ShieldCheck className="w-3.5 h-3.5 text-vermilion-500" />
-          <span>SEBI Registered Investment Adviser Portal</span>
-        </div>
-
-        <h1 className="font-machina text-2xl font-bold tracking-tight mb-1.5">
-          {mode === 'SIGN_IN' ? 'Welcome back, Adviser' : 'Register Adviser Practice'}
+      {/* Centered Elevated Slate Auth Card (#181B21 with Polished Off-White Hairline) */}
+      <div className="ag-panel-card w-full max-w-[420px] mx-auto my-8 p-7 md:p-8 shadow-2xl">
+        <h1 className="font-machina text-2xl font-bold tracking-tight text-white mb-1">
+          {mode === 'SIGN_IN' ? 'Adviser Sign In' : 'Create Adviser Account'}
         </h1>
-        <p className="text-xs text-zinc-400 mb-6">
+        <p className="text-xs text-[#9DA3AE] mb-6">
           {mode === 'SIGN_IN'
-            ? 'Sign in to access your fiduciary client folios and SEBI Regulation 19 audit seal workbench.'
-            : 'Create your licensed RIA account to automate suitability math and direct mutual fund planning.'}
+            ? 'Access your client folios, suitability parameters, and digital signature workspace.'
+            : 'Set up your practice workspace to manage client portfolios and compliance dossiers.'}
         </p>
 
         {!isConfigured && (
-          <div className="mb-4 p-3 rounded-xl bg-[#f59e0b15] border border-[#f59e0b40] text-xs text-amber-300">
-            Notice: VITE_FIREBASE_* keys not detected. Ensure your frontend/.env is loaded and restart Vite.
+          <div className="mb-4 p-3 rounded-xl bg-[#2A2215] border border-[#F59E0B]/40 text-xs text-amber-200">
+            VITE_FIREBASE_* keys not detected. Ensure frontend/.env is configured and restart Vite.
           </div>
         )}
 
         {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl bg-[#ef44441a] border border-[#ef44444d] text-xs text-red-300">
+          <div className="mb-4 p-3 rounded-xl bg-[#2A171B] border border-[#EF4444]/40 text-xs text-red-200">
             {errorMsg}
           </div>
         )}
@@ -147,22 +151,24 @@ export default function AuthPage() {
         <form onSubmit={handleEmailAuth} className="space-y-3.5">
           {mode === 'SIGN_UP' && (
             <div>
-              <label className="block text-[11px] text-zinc-400 mb-1">Full Name</label>
+              <label className="block text-[11.5px] text-[#9DA3AE] mb-1">
+                Full Name
+              </label>
               <input
                 type="text"
                 required
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder="Siddharth Verma"
-                className="w-full bg-input border border-standardBorder focus:border-vermilion-500 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition"
+                className="w-full bg-[#131519] border border-[#2A2E39] focus:border-[#1A73E8] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-[#636870] outline-none transition"
               />
             </div>
           )}
 
           <div>
-            <label className="block text-[11px] text-zinc-400 mb-1 flex items-center justify-between">
+            <label className="block text-[11.5px] text-[#9DA3AE] mb-1 flex items-center justify-between">
               <span>Work Email</span>
-              <Mail className="w-3.5 h-3.5 text-zinc-500" />
+              <Mail className="w-3.5 h-3.5 text-[#636870]" />
             </label>
             <input
               type="email"
@@ -170,14 +176,14 @@ export default function AuthPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="adviser@practice.in"
-              className="w-full bg-input border border-standardBorder focus:border-vermilion-500 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition"
+              className="w-full bg-[#131519] border border-[#2A2E39] focus:border-[#1A73E8] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-[#636870] outline-none transition"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] text-zinc-400 mb-1 flex items-center justify-between">
+            <label className="block text-[11.5px] text-[#9DA3AE] mb-1 flex items-center justify-between">
               <span>Password</span>
-              <Lock className="w-3.5 h-3.5 text-zinc-500" />
+              <Lock className="w-3.5 h-3.5 text-[#636870]" />
             </label>
             <input
               type="password"
@@ -186,53 +192,55 @@ export default function AuthPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full bg-input border border-standardBorder focus:border-vermilion-500 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition"
+              className="w-full bg-[#131519] border border-[#2A2E39] focus:border-[#1A73E8] rounded-xl px-3.5 py-2.5 text-sm text-white placeholder-[#636870] outline-none transition"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] text-zinc-400 mb-1 flex items-center justify-between">
-              <span>SEBI RIA Registration Number</span>
-              <BadgeCheck className="w-3.5 h-3.5 text-fiduciarySafe" />
+            <label className="block text-[11.5px] text-[#9DA3AE] mb-1 flex items-center justify-between">
+              <span>Registration Number</span>
+              <BadgeCheck className="w-3.5 h-3.5 text-[#8AB4F8]" />
             </label>
             <input
               type="text"
               value={sebiRegNo}
               onChange={(e) => setSebiRegNo(e.target.value)}
               placeholder="INA000018492"
-              className="w-full bg-input border border-standardBorder focus:border-vermilion-500 rounded-xl px-3.5 py-2 text-xs font-mono text-zinc-200 outline-none transition"
+              className="w-full bg-[#131519] border border-[#2A2E39] focus:border-[#1A73E8] rounded-xl px-3.5 py-2 text-xs font-mono text-white placeholder-[#636870] outline-none transition"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full mt-2 bg-vermilion-500 hover:bg-vermilion-600 disabled:opacity-50 text-white font-semibold text-sm py-2.5 rounded-full transition flex items-center justify-center gap-2"
+            className="ag-btn-blue w-full mt-2 font-semibold text-xs py-2.5 rounded-full flex items-center justify-center gap-2 shadow-md"
           >
             <span>
               {loading
                 ? 'Authenticating...'
                 : mode === 'SIGN_IN'
-                ? 'Sign In to Workbench'
+                ? 'Sign In to Workspace'
                 : 'Create Adviser Account'}
             </span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </form>
 
         <div className="my-5 flex items-center gap-3">
-          <div className="h-px flex-1 bg-standardBorder" />
-          <span className="text-[11px] text-zinc-500 uppercase tracking-wider">Or continue with</span>
-          <div className="h-px flex-1 bg-standardBorder" />
+          <div className="h-px flex-1 bg-[#262A34]" />
+          <span className="text-[10.5px] text-[#636870] uppercase tracking-wider">
+            Or continue with
+          </span>
+          <div className="h-px flex-1 bg-[#262A34]" />
         </div>
 
-        {/* Google OAuth & Anonymous Guest Auth */}
+        {/* Google OAuth & Instant Anonymous Session */}
         <div className="space-y-2.5">
           <button
             type="button"
             onClick={handleGoogleSignIn}
             disabled={loading}
-            className="w-full bg-input hover:bg-[#1c1c1c] border border-standardBorder text-white text-xs font-medium py-2.5 rounded-xl transition flex items-center justify-center gap-2.5"
+            className="ag-soft-pill w-full text-xs font-medium py-2.5 rounded-xl flex items-center justify-center gap-2.5"
           >
             <svg className="w-4 h-4" viewBox="0 0 24 24">
               <path
@@ -259,32 +267,32 @@ export default function AuthPage() {
             type="button"
             onClick={handleAnonymousSignIn}
             disabled={loading}
-            className="w-full bg-[#111111] hover:bg-[#191919] border border-bentoBorder text-zinc-300 hover:text-white text-xs font-medium py-2.5 rounded-xl transition flex items-center justify-center gap-2"
+            className="ag-soft-pill w-full text-xs font-medium py-2.5 rounded-xl flex items-center justify-center gap-2"
           >
-            <UserCheck className="w-3.5 h-3.5 text-vermilion-400" />
-            <span>Continue as Anonymous Session (Firebase Guest)</span>
+            <UserCheck className="w-3.5 h-3.5 text-[#8AB4F8]" />
+            <span>Continue as Guest Adviser</span>
           </button>
         </div>
 
-        <div className="mt-6 text-center text-xs text-zinc-400">
+        <div className="mt-6 text-center text-xs text-[#9DA3AE]">
           {mode === 'SIGN_IN' ? (
             <>
-              New SEBI RIA practice?{' '}
+              New practice?{' '}
               <button
                 type="button"
                 onClick={() => setMode('SIGN_UP')}
-                className="text-vermilion-400 hover:underline font-medium"
+                className="text-[#8AB4F8] hover:underline font-medium"
               >
                 Create an account
               </button>
             </>
           ) : (
             <>
-              Already have an adviser account?{' '}
+              Already registered?{' '}
               <button
                 type="button"
                 onClick={() => setMode('SIGN_IN')}
-                className="text-vermilion-400 hover:underline font-medium"
+                className="text-[#8AB4F8] hover:underline font-medium"
               >
                 Sign in
               </button>
@@ -293,9 +301,8 @@ export default function AuthPage() {
         </div>
       </div>
 
-      {/* Bottom Legal Footnote */}
-      <div className="text-center text-[11px] text-zinc-600">
-        Protected by Cryptographic SHA-256 Audit Seals • SEBI (Investment Advisers) Regulations, 2013
+      <div className="text-center text-[11px] text-[#636870]">
+        Fiducia — Fiduciary Advisory Operating System
       </div>
     </div>
   );
