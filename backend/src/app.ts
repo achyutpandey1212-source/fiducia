@@ -29,6 +29,10 @@ import {
 } from './services/security/quarantineGate.js';
 import { getMongoConnectionStatus } from './config/mongodb.js';
 import { getKeepAliveTelemetry } from './services/infrastructure/keepAlive.service.js';
+import { STATUTORY_FACTSHEET_CHUNKS } from './services/ai/factsheetCorpus.js';
+import { getAiGatewayTelemetry } from './services/ai/aiGateway.js';
+import { queryFiduciaryRagPipeline } from './services/ai/ragEngine.js';
+import { generateFiduciaryPlanMemo } from './services/ai/planNarrator.js';
 
 dotenv.config();
 
@@ -58,10 +62,20 @@ app.get('/api/v1/health/keep-alive', (_req, res) => {
 /**
  * 2. Complete End-to-End Deterministic Quant Plan Evaluation (< 18ms)
  */
-app.post('/api/v1/quant/evaluate-plan', (req, res) => {
+app.post('/api/v1/quant/evaluate-plan', async (req, res) => {
   const start = performance.now();
   try {
-    const { clientId, capacityInputs, toleranceInputs, goalInput, monthlySipInr } = req.body;
+    const {
+      clientId,
+      fullName,
+      email,
+      phone,
+      panNumber,
+      capacityInputs,
+      toleranceInputs,
+      goalInput,
+      monthlySipInr,
+    } = req.body;
 
     const riskProfile = evaluateClientRiskProfile(capacityInputs, toleranceInputs);
     const goalProjection = evaluateFinancialGoal({
@@ -77,6 +91,21 @@ app.post('/api/v1/quant/evaluate-plan', (req, res) => {
       capacityInputs.primaryGoalHorizonYears || 20
     );
 
+    const fiduciaryMemo = await generateFiduciaryPlanMemo({
+      clientId: clientId || 'client_anonymous',
+      fullName,
+      email,
+      phone,
+      panNumber,
+      clientAge: capacityInputs.clientAge,
+      netMonthlyIncomeInr: capacityInputs.netMonthlyIncomeInr,
+      totalMonthlyEmiInr: capacityInputs.totalMonthlyEmiInr,
+      riskProfile,
+      goalProjection,
+      selectedBasket: directBasket.basket,
+      commissionErosion,
+    });
+
     const planId = `plan_${Date.now().toString(36)}`;
     const quarantinedAtUtc = new Date().toISOString();
 
@@ -91,6 +120,7 @@ app.post('/api/v1/quant/evaluate-plan', (req, res) => {
         directBasket,
         historicalBacktest,
         commissionErosion,
+        fiduciaryMemo,
       },
     };
 
@@ -108,6 +138,7 @@ app.post('/api/v1/quant/evaluate-plan', (req, res) => {
       directBasket,
       historicalBacktest,
       commissionErosion,
+      fiduciaryMemo,
     });
   } catch (err) {
     res.status(400).json({
@@ -249,5 +280,56 @@ app.post('/api/v1/plans/:planId/sign', (req, res) => {
     signedTimestampUtc,
     riaSebiRegistration,
     canonicalPayload,
+  });
+});
+
+/**
+ * 6. Phase 2: Fiduciary Cited RAG Research Pipeline & Statutory Factsheet Endpoints
+ */
+app.post('/api/v1/rag/query', async (req, res) => {
+  try {
+    const { query, filterIsin, topK } = req.body;
+    const ragResult = await queryFiduciaryRagPipeline({
+      query: query || '',
+      filterIsin,
+      topK,
+    });
+
+    if (ragResult.status === 'BLOCKED_BY_SEBI_GUARDRAIL') {
+      res.status(403).json(ragResult);
+      return;
+    }
+
+    res.status(200).json(ragResult);
+  } catch (err) {
+    res.status(500).json({
+      status: 'error',
+      message: (err as Error).message,
+    });
+  }
+});
+
+app.get('/api/v1/rag/factsheets', (_req, res) => {
+  res.status(200).json({
+    status: 'success',
+    totalChunks: STATUTORY_FACTSHEET_CHUNKS.length,
+    chunks: STATUTORY_FACTSHEET_CHUNKS,
+  });
+});
+
+/**
+ * 7. Phase 2: Admin System & AI Gateway Key Pool Telemetry (`/admin/system`)
+ */
+app.get('/api/v1/admin/telemetry', (_req, res) => {
+  const aiTelemetry = getAiGatewayTelemetry();
+  res.status(200).json({
+    status: 'ok',
+    service: 'fiducia-api',
+    modelVersion: process.env.APP_VERSION || 'fiducia-v1.0.0',
+    infrastructureCostInr: 0,
+    databaseStatus: getMongoConnectionStatus(),
+    keepAlive: getKeepAliveTelemetry(),
+    aiGateway: aiTelemetry,
+    timestampUtc: new Date().toISOString(),
   });
 });
