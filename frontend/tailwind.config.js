@@ -26,21 +26,23 @@ export default {
         bentoBorder: '#302C2A',
         standardBorder: '#262626',
 
-        // World 2: Antigravity Deep Slate Studio Workspace Palette
-        agCanvas: '#0E1015',
-        agSidebar: '#12141A',
-        agPanel: '#161820',
-        agPanelElevated: '#1A1D26',
-        agInput: '#1A1D26',
-        agBorder: '#252833',
-        agBorderHover: '#363A48',
-        agTextPrimary: '#FFFFFF',
-        agTextSecondary: '#9DA1AB',
-        agTextMuted: '#646875',
-        agBlue: '#1A73E8',
-        agBlueHover: '#1557B0',
+        // World 2: Exact Pixel-Sampled Google Antigravity Palette
+        agCanvas: '#0B0C0E',        // Center stream pure charcoal-black canvas
+        agSidebar: '#101114',       // Left & Right 240px/290px panes
+        agPanel: '#141619',         // Code / Data container block
+        agPanelElevated: '#1C1E22', // Soft gray pill / active sidebar row
+        agCodePill: '#1B1E24',      // Inline monospace pill background
+        agInput: '#141619',         // Floating prompt dock & inputs
+        agBorder: '#1E2024',        // Ultra-quiet 1px pane & divider hairline
+        agBorderSubtle: '#22252A',  // Code block border
+        agBorderHover: '#2E323B',   // Hover border state
+        agTextPrimary: '#ECEEEF',   // Crisp off-white primary text
+        agTextSecondary: '#9BA1A6', // Calm ash-gray body & sidebar items
+        agTextMuted: '#636870',     // Timestamps & inactive labels
+        agBlue: '#1A73E8',          // The ONE primary action pill blue
+        agBlueHover: '#1864CF',
 
-        // Fiduciary Status Semantics
+        // Quiet Fiduciary Status Tokens
         fiduciarySafe: '#10B981',
         fiduciaryWarning: '#F59E0B',
         fiduciaryDanger: '#EF4444',
