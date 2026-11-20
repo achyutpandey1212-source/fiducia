@@ -1,10 +1,10 @@
 /**
- * World 2: Exact Google Antigravity 3-Pane IDE Stream Architecture (/workbench)
- * - Authentic Antigravity Color Hierarchy: Deep charcoal canvas (#0D0E11), distinct slate-grey sidebars (#131519),
- *   elevated greyish panels/prompt dock (#181B21 / #1A1D24), and polished off-white hairline borders (rgba(255,255,255,0.13)).
- * - Smooth 60fps Drag-Resizable Left & Right Side Panels with responsive collapse and center flex adaptation.
- * - Antigravity Blue (#1A73E8) buttons for primary intent (zero white button blocks).
- * - Zero admin/gateway telemetry clutter inside the Adviser Workspace.
+ * World 2: Google Antigravity 3-Pane IDE Stream Architecture (/workbench)
+ * Clean, quiet, self-assured product copy:
+ * - Zero repetition of regulation numbers or internal engineering lore
+ * - Zero fake code filenames or latency bragging
+ * - Single-location controls (no duplicate buttons across left/right rails)
+ * - Clean, minimal prompt dock with natural quick-query chips
  */
 
 import React, { useState, useMemo, useEffect, useRef, useCallback } from 'react';
@@ -26,11 +26,9 @@ import {
   Folder,
   Search,
   FileText,
-  Terminal,
   CheckSquare,
   AlertCircle,
   ArrowRight,
-  Clock,
   Settings,
   PanelLeft,
   PanelRight,
@@ -38,6 +36,7 @@ import {
   Check,
   RotateCcw,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 
 interface WorkbenchPageProps {
@@ -57,17 +56,6 @@ interface RagCitationResult {
     directTerPct: number;
     exitLoadRule: string;
   }>;
-  factCheck?: {
-    isFullyVerified: boolean;
-    verificationBanner: string;
-  };
-  guardrailCheck?: {
-    passed: boolean;
-    violatedRuleId?: string;
-    ruleName?: string;
-    sebiRegulationCited?: string;
-    statutoryWarningNotice?: string;
-  };
 }
 
 async function computeBrowserSha256Hex(canonicalText: string): Promise<string> {
@@ -103,15 +91,14 @@ export default function WorkbenchPage({
     'ALL' | 'QUARANTINED' | 'APPROVED_SIGNED'
   >('ALL');
 
-  // Drag-Resizable Side Panels State (with Responsive Collapse on narrow screens)
   const [showLeftPane, setShowLeftPane] = useState<boolean>(
     typeof window !== 'undefined' ? window.innerWidth >= 860 : true
   );
   const [showRightPane, setShowRightPane] = useState<boolean>(
     typeof window !== 'undefined' ? window.innerWidth >= 1120 : true
   );
-  const [leftPaneWidth, setLeftPaneWidth] = useState<number>(244);
-  const [rightPaneWidth, setRightPaneWidth] = useState<number>(304);
+  const [leftPaneWidth, setLeftPaneWidth] = useState<number>(240);
+  const [rightPaneWidth, setRightPaneWidth] = useState<number>(296);
   const draggingSideRef = useRef<'LEFT' | 'RIGHT' | null>(null);
   const [activeDragSide, setActiveDragSide] = useState<'LEFT' | 'RIGHT' | null>(
     null
@@ -127,16 +114,15 @@ export default function WorkbenchPage({
       ? localStorage.getItem('fiducia_sebi_reg') || 'INA000018492'
       : 'INA000018492';
 
-  // Drag Resizer Mouse Handlers
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!draggingSideRef.current) return;
     if (draggingSideRef.current === 'LEFT') {
-      const nextWidth = Math.max(185, Math.min(390, e.clientX));
+      const nextWidth = Math.max(185, Math.min(380, e.clientX));
       setLeftPaneWidth(nextWidth);
     } else if (draggingSideRef.current === 'RIGHT') {
       const nextWidth = Math.max(
         240,
-        Math.min(480, window.innerWidth - e.clientX)
+        Math.min(460, window.innerWidth - e.clientX)
       );
       setRightPaneWidth(nextWidth);
     }
@@ -187,7 +173,6 @@ export default function WorkbenchPage({
     [folios, selectedFolioId]
   );
 
-  // Tier 1: Sub-millisecond 60fps local V8 quant evaluation
   const evaluation = useMemo(
     () => computeLiveWorkspaceEvaluation(activeFolio),
     [activeFolio]
@@ -275,14 +260,8 @@ export default function WorkbenchPage({
           status: 'BLOCKED_BY_SEBI_GUARDRAIL',
           query: q,
           answerNarrative:
-            'SEBI Statutory Warning: Promising guaranteed returns, trading unregulated crypto assets, or chasing F&O losses violates SEBI (Investment Advisers) Regulations, 2013 (Reg 15 & 17). Query intercepted and blocked prior to inference.',
+            'Advisory Notice: Promising assured returns, recommending unregulated digital assets, or leveraging derivatives for loss recovery is restricted under investment advisory regulations.',
           citations: [],
-          guardrailCheck: {
-            passed: false,
-            violatedRuleId: 'G-01 / G-03',
-            ruleName: 'SEBI Pre-Generation Regulatory Firewall',
-            sebiRegulationCited: 'SEBI IA Regulations 15(1) & 17',
-          },
         });
       } else {
         const matchedFund =
@@ -293,7 +272,7 @@ export default function WorkbenchPage({
         setRagResult({
           status: 'VERIFIED_SUCCESS',
           query: q,
-          answerNarrative: `${matchedFund.schemeName} operates with a Direct Plan Total Expense Ratio (TER) of ${matchedFund.directTerPct}% compared to ${matchedFund.regularTerPct}% in the Regular Plan [${matchedFund.docId}, p. ${matchedFund.citedPage}]. Statutory Exit Load Rule: ${matchedFund.exitLoadSummary} [${matchedFund.docId}, p. ${matchedFund.citedPage}].`,
+          answerNarrative: `${matchedFund.schemeName} carries a Direct Plan expense ratio of ${matchedFund.directTerPct}% (vs ${matchedFund.regularTerPct}% in Regular Plan) [${matchedFund.docId}, p. ${matchedFund.citedPage}]. Exit load policy: ${matchedFund.exitLoadSummary}.`,
           citations: [
             {
               docId: matchedFund.docId,
@@ -304,11 +283,6 @@ export default function WorkbenchPage({
               exitLoadRule: matchedFund.exitLoadSummary,
             },
           ],
-          factCheck: {
-            isFullyVerified: true,
-            verificationBanner:
-              '100% Deterministic Fact-Check Passed against official AMFI SID.',
-          },
         });
       }
     } finally {
@@ -318,7 +292,7 @@ export default function WorkbenchPage({
 
   useEffect(() => {
     handleExecuteRagQuery(
-      'What is the exit load and Direct TER of Parag Parikh Flexi Cap Fund?'
+      'What is the exit load and expense ratio of Parag Parikh Flexi Cap Fund?'
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -337,40 +311,30 @@ export default function WorkbenchPage({
     activeFolio.folderStatus === 'APPROVED_SIGNED' &&
     !evaluation.isHardQuarantineTriggered;
 
-  // Live Fiduciary Verification Tasks (Matches Antigravity's Right-Pane Task Checklist)
-  const verificationTasks = [
+  // Clean, Non-Repetitive Verification Checklist
+  const verificationChecks = [
     {
-      label: `SEBI Reg 16 Risk Balance (${evaluation.conflictRuleTriggered.replace(/_/g, ' ')})`,
+      label: 'Risk Capacity vs. Tolerance Balance',
       passed: true,
     },
     {
-      label: `SEBI Reg 17 Suitability Assertions (${
-        evaluation.isHardQuarantineTriggered
-          ? `${evaluation.regulatoryViolationsIntercepted.length} Violation`
-          : 'Compliant'
-      })`,
+      label: 'Portfolio Suitability Bounds',
       passed: !evaluation.isHardQuarantineTriggered,
     },
     {
-      label: `Segmented ${evaluation.goal.appliedInflationPct}% Goal Inflation & Glide Path`,
+      label: `Inflation-Adjusted Goal (${evaluation.goal.appliedInflationPct}%)`,
       passed: true,
     },
     {
-      label: `Direct Plan Stock Overlap Shield (${evaluation.maxPairwiseOverlapPct}% < 45%)`,
+      label: `Equity Stock Overlap (${evaluation.maxPairwiseOverlapPct}%)`,
       passed: evaluation.maxPairwiseOverlapPct <= 45,
     },
     {
-      label: `Pre-Gen SEBI Guardrail Firewall (${
-        ragResult?.status === 'BLOCKED_BY_SEBI_GUARDRAIL'
-          ? 'Intercepted G-01/G-03'
-          : 'Armed'
-      })`,
+      label: 'Advisory Compliance Filter',
       passed: ragResult?.status !== 'BLOCKED_BY_SEBI_GUARDRAIL',
     },
     {
-      label: `SEBI Reg 19 SHA-256 Audit Seal (${
-        isSignedAndValid ? 'Stamped' : 'Pending Sign-Off'
-      })`,
+      label: isSignedAndValid ? 'Adviser Signature Verified' : 'Awaiting Adviser Signature',
       passed: isSignedAndValid,
     },
   ];
@@ -382,13 +346,18 @@ export default function WorkbenchPage({
     { key: 'REAL_ESTATE_HOME_DOWNPAYMENT', shortLabel: 'Real Estate (7.0%)' },
   ];
 
+  const conflictRuleDisplay: Record<string, string> = {
+    CAPACITY_CLAMP: 'Capacity Clamp Applied',
+    INFLATION_SHIELD_BRIDGE: 'Inflation Shield Bridge',
+    HARMONIOUS_ALIGNMENT: 'Balanced Alignment',
+  };
+
   return (
     <div className="ag-workspace-root h-screen w-screen overflow-hidden flex flex-col font-manrope">
       {/* =====================================================================
-          TOP APPLICATION WINDOW BAR (44px — Exact Antigravity Header)
+          TOP APPLICATION BAR (44px)
       ===================================================================== */}
       <header className="ag-topbar h-[44px] shrink-0 px-3.5 flex items-center justify-between text-[12.5px] select-none">
-        {/* Left: Brand Icon + Sidebar Toggle + Breadcrumb */}
         <div className="flex items-center gap-3 min-w-0">
           <div className="flex items-center gap-1.5">
             <Link
@@ -417,7 +386,6 @@ export default function WorkbenchPage({
             style={{ backgroundColor: 'rgba(255, 255, 255, 0.12)' }}
           />
 
-          {/* Clean Breadcrumb: Workspace / Client Dossier Title */}
           <div className="flex items-center gap-1.5 truncate text-[12.5px]">
             <span className="text-[#9DA3AE]">Fiducia</span>
             <span className="text-[#636870]">/</span>
@@ -427,7 +395,6 @@ export default function WorkbenchPage({
           </div>
         </div>
 
-        {/* Right: Antigravity Blue Pill Buttons + Inspector Toggle */}
         <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
@@ -438,10 +405,10 @@ export default function WorkbenchPage({
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>
               {isSignedAndValid
-                ? 'SHA-256 Verified →'
+                ? 'Signed & Verified'
                 : evaluation.isHardQuarantineTriggered
-                ? 'Restore Clamp & Sign →'
-                : 'Approve & Stamp →'}
+                ? 'Restore Limit & Sign →'
+                : 'Approve & Sign →'}
             </span>
           </button>
 
@@ -452,7 +419,7 @@ export default function WorkbenchPage({
             title={
               isSignedAndValid
                 ? 'Export Signed Client PDF Dossier'
-                : 'HTTP 403 Quarantine: Sign plan first to unlock export'
+                : 'Approve and sign the plan first to enable export'
             }
             className="ag-soft-pill px-3 py-1 rounded-full text-[12px] font-medium disabled:opacity-40 disabled:cursor-not-allowed"
           >
@@ -479,7 +446,7 @@ export default function WorkbenchPage({
       ===================================================================== */}
       <div className="flex-1 flex overflow-hidden relative">
         {/* -------------------------------------------------------------------
-            PANE 1: ADJUSTABLE LEFT NAVIGATION RAIL (#131519)
+            PANE 1: ADJUSTABLE LEFT NAVIGATION RAIL
         ------------------------------------------------------------------- */}
         {showLeftPane && (
           <>
@@ -487,9 +454,9 @@ export default function WorkbenchPage({
               style={{ width: `${leftPaneWidth}px` }}
               className="ag-sidebar-left shrink-0 h-full flex flex-col justify-between select-none"
             >
-              <div className="p-3 space-y-4 overflow-y-auto">
-                {/* Soft Grey "+ New Client Folio" Pill (Matches "+ New Conversation") */}
-                <div className="space-y-1">
+              <div className="p-3 space-y-5 overflow-y-auto">
+                {/* New Client Folio Button */}
+                <div>
                   <Link
                     to="/intake"
                     className="ag-soft-pill w-full rounded-lg px-3 py-1.5 text-[12.5px] font-medium flex items-center gap-2"
@@ -497,26 +464,12 @@ export default function WorkbenchPage({
                     <Plus className="w-3.5 h-3.5 text-[#9DA3AE]" />
                     <span className="truncate">New Client Folio</span>
                   </Link>
-
-                  <button
-                    type="button"
-                    onClick={() => setSimulate2020Crash(!simulate2020Crash)}
-                    className="ag-row-inactive w-full rounded-lg px-3 py-1.5 text-[12.5px] flex items-center justify-between gap-2 transition"
-                  >
-                    <span className="flex items-center gap-2.5 truncate">
-                      <Clock className="w-3.5 h-3.5 text-[#636870] shrink-0" />
-                      <span className="truncate">2020 Crash Replay</span>
-                    </span>
-                    <span className="text-[10.5px] font-mono text-[#8AB4F8]">
-                      {simulate2020Crash ? 'ON' : 'OFF'}
-                    </span>
-                  </button>
                 </div>
 
-                {/* Client Households List (Borderless 1-Line Rows with Right-Aligned Horizon) */}
+                {/* Client Households List */}
                 <div>
                   <div className="px-2.5 mb-1.5 flex items-center justify-between text-[11px] font-medium text-[#636870]">
-                    <span>Client Households</span>
+                    <span>Clients</span>
                     <span className="font-mono">{filteredFolios.length}</span>
                   </div>
                   <div className="space-y-0.5">
@@ -543,7 +496,7 @@ export default function WorkbenchPage({
                   </div>
                 </div>
 
-                {/* Compliance Folders Tree (Matches Antigravity Folder Tree) */}
+                {/* Folders Tree */}
                 <div className="space-y-3 pt-1">
                   <div>
                     <button
@@ -556,7 +509,7 @@ export default function WorkbenchPage({
                       className="w-full px-2.5 py-1 text-[12px] text-[#9DA3AE] hover:text-white flex items-center gap-2 transition"
                     >
                       <Folder className="w-3.5 h-3.5 text-[#636870] shrink-0" />
-                      <span className="truncate">Quarantined Drafts</span>
+                      <span className="truncate">In Review</span>
                     </button>
                     <div className="mt-0.5 pl-4 space-y-0.5">
                       {folios
@@ -573,9 +526,6 @@ export default function WorkbenchPage({
                             }`}
                           >
                             <span className="truncate">{f.goalName}</span>
-                            <span className="text-[10.5px] font-mono text-[#636870] shrink-0">
-                              403
-                            </span>
                           </button>
                         ))}
                     </div>
@@ -594,13 +544,13 @@ export default function WorkbenchPage({
                       className="w-full px-2.5 py-1 text-[12px] text-[#9DA3AE] hover:text-white flex items-center gap-2 transition"
                     >
                       <Folder className="w-3.5 h-3.5 text-[#636870] shrink-0" />
-                      <span className="truncate">Signed &amp; Stamped</span>
+                      <span className="truncate">Signed Plans</span>
                     </button>
                     <div className="mt-0.5 pl-4 space-y-0.5">
                       {folios.filter((f) => f.folderStatus === 'APPROVED_SIGNED')
                         .length === 0 ? (
                         <div className="px-2.5 py-1 text-[11px] text-[#636870]">
-                          No signed plans yet
+                          None yet
                         </div>
                       ) : (
                         folios
@@ -617,9 +567,6 @@ export default function WorkbenchPage({
                               }`}
                             >
                               <span className="truncate">{f.clientName}</span>
-                              <span className="text-[10.5px] font-mono text-[#10B981] shrink-0">
-                                SHA
-                              </span>
                             </button>
                           ))
                       )}
@@ -628,7 +575,7 @@ export default function WorkbenchPage({
                 </div>
               </div>
 
-              {/* Bottom Quiet Adviser Profile / Settings Link */}
+              {/* Adviser Profile Link */}
               <div
                 className="p-2.5 flex items-center justify-between text-[12px] text-[#9DA3AE]"
                 style={{ borderTop: '1px solid rgba(255, 255, 255, 0.09)' }}
@@ -641,9 +588,9 @@ export default function WorkbenchPage({
                   <span className="truncate">
                     {firebaseUser
                       ? firebaseUser.isAnonymous
-                        ? `RIA Guest (${sebiRegNo})`
+                        ? `Adviser (${sebiRegNo})`
                         : firebaseUser.email
-                      : `RIA ${sebiRegNo}`}
+                      : `Adviser (${sebiRegNo})`}
                   </span>
                 </Link>
                 {firebaseUser && (
@@ -662,7 +609,6 @@ export default function WorkbenchPage({
               </div>
             </aside>
 
-            {/* Left Interactive Drag-Resize Splitter */}
             <div
               onMouseDown={() => startResize('LEFT')}
               title="Drag to resize left panel"
@@ -674,59 +620,30 @@ export default function WorkbenchPage({
         )}
 
         {/* -------------------------------------------------------------------
-            PANE 2: RESPONSIVE CENTER DOCUMENT STREAM (flex-1, #0D0E11)
+            PANE 2: CENTER WORKSPACE STREAM
         ------------------------------------------------------------------- */}
         <div className="flex-1 min-w-[320px] flex flex-col h-full overflow-hidden">
-          {/* Scrollable Editorial Stream */}
-          <main className="flex-1 overflow-y-auto px-4 sm:px-8 pt-7 pb-6">
-            <div className="max-w-[740px] mx-auto space-y-7 text-[13.5px] leading-relaxed">
-              {/* SECTION 1: Household Balance Sheet & Interactive Parameters */}
-              <section className="space-y-3">
-                <h2 className="text-[15px] font-semibold text-white tracking-tight">
-                  1. Household Balance Sheet &amp; Interactive Parameters
-                </h2>
-                <p className="text-[13px] text-[#9DA3AE]">
-                  Adjusting any parameter recalculates two-dimensional SEBI Regulation 16 &amp; 17
-                  suitability math locally in{' '}
-                  <code className="ag-inline-code">
-                    {evaluation.computeTimeMs.toFixed(2)} ms
-                  </code>{' '}
-                  for{' '}
-                  <code className="ag-inline-code">{activeFolio.clientName}</code>.
-                </p>
+          <main className="flex-1 overflow-y-auto px-4 sm:px-8 pt-6 pb-6">
+            <div className="max-w-[740px] mx-auto space-y-6 text-[13.5px] leading-relaxed">
+              {/* SECTION 1: Household Balance Sheet & Goal Parameters */}
+              <section className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <h2 className="text-[15px] font-semibold text-white tracking-tight">
+                    1. Cash Flow &amp; Goal Parameters
+                  </h2>
+                  <span className="text-[12px] text-[#9DA3AE]">
+                    Monthly Surplus:{' '}
+                    <strong className="text-white font-mono">
+                      {formatInrCompact(evaluation.monthlySurplusInr)}/mo
+                    </strong>
+                  </span>
+                </div>
 
-                {/* Elevated Greyish Panel Card (#181B21) with Polished Off-White Boundary */}
                 <div className="ag-panel-card overflow-hidden">
-                  <div className="ag-panel-header px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[11.5px] text-[#9DA3AE] font-mono">
-                    <span>balance_sheet_parameters.ts</span>
-                    <div className="flex items-center gap-3">
-                      <span>
-                        Monthly Surplus:{' '}
-                        <strong className="text-white">
-                          {formatInrCompact(evaluation.monthlySurplusInr)}/mo
-                        </strong>
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          updateActiveField(
-                            'customEquityOverridePct',
-                            activeFolio.customEquityOverridePct === 90 ? null : 90
-                          )
-                        }
-                        className="ag-btn-secondary px-2.5 py-0.5 rounded-full text-[11px] font-sans font-medium"
-                      >
-                        {activeFolio.customEquityOverridePct === 90
-                          ? 'Reset 90% Override'
-                          : 'Test 90% Equity Override'}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-5">
+                  <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                     {/* Slider 1: Take-Home Income */}
                     <div>
-                      <div className="flex justify-between text-[12px] mb-2">
+                      <div className="flex justify-between text-[12px] mb-1.5">
                         <span className="text-[#9DA3AE]">Net Monthly Income</span>
                         <span className="font-mono text-white font-medium">
                           {formatInrCompact(activeFolio.netMonthlyIncomeInr)}/mo
@@ -747,7 +664,7 @@ export default function WorkbenchPage({
 
                     {/* Slider 2: Monthly Loan EMIs */}
                     <div>
-                      <div className="flex justify-between text-[12px] mb-2">
+                      <div className="flex justify-between text-[12px] mb-1.5">
                         <span className="text-[#9DA3AE]">Monthly Loan EMIs</span>
                         <span className="font-mono text-white font-medium">
                           {formatInrCompact(activeFolio.totalMonthlyEmiInr)}{' '}
@@ -771,12 +688,12 @@ export default function WorkbenchPage({
 
                     {/* Slider 3: Liquid Emergency Reserve */}
                     <div>
-                      <div className="flex justify-between text-[12px] mb-2">
-                        <span className="text-[#9DA3AE]">Liquid Emergency Reserve</span>
+                      <div className="flex justify-between text-[12px] mb-1.5">
+                        <span className="text-[#9DA3AE]">Emergency Reserve</span>
                         <span className="font-mono text-white font-medium">
                           {formatInrCompact(activeFolio.liquidSavingsInr)}{' '}
                           <span className="text-[#8AB4F8]">
-                            ({evaluation.runwayMonths}m buffer)
+                            ({evaluation.runwayMonths}m)
                           </span>
                         </span>
                       </div>
@@ -795,8 +712,8 @@ export default function WorkbenchPage({
 
                     {/* Slider 4: Goal Present Cost */}
                     <div>
-                      <div className="flex justify-between text-[12px] mb-2">
-                        <span className="text-[#9DA3AE]">Goal Present Cost Today</span>
+                      <div className="flex justify-between text-[12px] mb-1.5">
+                        <span className="text-[#9DA3AE]">Current Goal Cost</span>
                         <span className="font-mono text-white font-medium">
                           {formatInrCompact(activeFolio.presentGoalCostInr)}
                         </span>
@@ -816,8 +733,8 @@ export default function WorkbenchPage({
 
                     {/* Slider 5: Goal Horizon */}
                     <div>
-                      <div className="flex justify-between text-[12px] mb-2">
-                        <span className="text-[#9DA3AE]">Time Horizon to Maturity</span>
+                      <div className="flex justify-between text-[12px] mb-1.5">
+                        <span className="text-[#9DA3AE]">Goal Horizon</span>
                         <span className="font-mono text-white font-medium">
                           {activeFolio.horizonYears} Years
                         </span>
@@ -837,7 +754,7 @@ export default function WorkbenchPage({
 
                     {/* Slider 6: Client Age */}
                     <div>
-                      <div className="flex justify-between text-[12px] mb-2">
+                      <div className="flex justify-between text-[12px] mb-1.5">
                         <span className="text-[#9DA3AE]">Client Age</span>
                         <span className="font-mono text-white font-medium">
                           {activeFolio.clientAge} Years
@@ -857,7 +774,7 @@ export default function WorkbenchPage({
                     </div>
                   </div>
 
-                  {/* Segmented Inflation Basket Selector (Antigravity Blue Active Button) */}
+                  {/* Goal Category & Stress Override Footer */}
                   <div
                     className="px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[11.5px]"
                     style={{
@@ -865,7 +782,6 @@ export default function WorkbenchPage({
                       borderTop: '1px solid rgba(255, 255, 255, 0.09)',
                     }}
                   >
-                    <span className="text-[#9DA3AE]">Segmented Inflation Basket:</span>
                     <div className="flex flex-wrap items-center gap-1.5">
                       {goalCategories.map((cat) => {
                         const isActive = activeFolio.goalCategory === cat.key;
@@ -885,92 +801,98 @@ export default function WorkbenchPage({
                         );
                       })}
                     </div>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        updateActiveField(
+                          'customEquityOverridePct',
+                          activeFolio.customEquityOverridePct === 90 ? null : 90
+                        )
+                      }
+                      className="ag-btn-secondary px-2.5 py-0.5 rounded-full text-[11px] font-medium"
+                    >
+                      {activeFolio.customEquityOverridePct === 90
+                        ? 'Reset Equity Limit'
+                        : 'Simulate 90% Equity'}
+                    </button>
                   </div>
                 </div>
               </section>
 
-              {/* SECTION 2: Fiduciary Suitability & Dynamic Glide Path Analysis */}
-              <section className="space-y-3">
+              {/* SECTION 2: Suitability & Glide Path Summary */}
+              <section className="space-y-2.5">
                 <h2 className="text-[15px] font-semibold text-white tracking-tight">
-                  2. Fiduciary Suitability &amp; Dynamic Glide Path Analysis
+                  2. Risk Allocation &amp; Glide Path
                 </h2>
 
-                <ol className="list-decimal list-inside space-y-2.5 text-[13px] text-[#9DA3AE]">
+                <ol className="list-decimal list-inside space-y-2 text-[13px] text-[#9DA3AE]">
                   <li>
-                    <strong className="text-white">Two-Dimensional Risk Resolution:</strong>{' '}
-                    Financial Safety Cushion is{' '}
+                    <strong className="text-white">Risk Profile:</strong>{' '}
+                    Financial Capacity{' '}
                     <code className="ag-inline-code">
-                      RC: {evaluation.riskCapacityScore}/100
+                      {evaluation.riskCapacityScore}/100
                     </code>{' '}
-                    and Market Crash Comfort is{' '}
+                    vs. Risk Tolerance{' '}
                     <code className="ag-inline-code">
-                      RT: {evaluation.riskToleranceScore}/100
-                    </code>
-                    . Triggered rule:{' '}
-                    <code className="ag-inline-code">
-                      {evaluation.conflictRuleTriggered}
+                      {evaluation.riskToleranceScore}/100
                     </code>{' '}
-                    → Effective Risk Score{' '}
+                    →{' '}
                     <code className="ag-inline-code">
-                      ERS {evaluation.effectiveRiskScore}/100 ({evaluation.riskCategoryLabel})
+                      {conflictRuleDisplay[evaluation.conflictRuleTriggered]}
+                    </code>{' '}
+                    (Score:{' '}
+                    <code className="ag-inline-code">
+                      {evaluation.effectiveRiskScore}/100 • {evaluation.riskCategoryLabel}
                     </code>
-                    .
+                    ).
                   </li>
 
                   <li>
-                    <strong className="text-white">Segmented Indian Inflation Target:</strong>{' '}
+                    <strong className="text-white">Target Corpus:</strong>{' '}
                     At{' '}
                     <code className="ag-inline-code">
-                      {evaluation.goal.appliedInflationPct}% annual inflation
+                      {evaluation.goal.appliedInflationPct}% inflation
                     </code>
-                    , the required corpus in {activeFolio.horizonYears} years is{' '}
+                    , future value in {activeFolio.horizonYears} years is{' '}
                     <code className="ag-inline-code">
                       {formatInrCompact(evaluation.goal.segmentedFvInr)}
                     </code>{' '}
-                    (preventing a{' '}
+                    (covers{' '}
                     <code className="ag-inline-code">
                       +{formatInrCompact(evaluation.goal.shortfallPreventedInr)}
                     </code>{' '}
-                    shortfall compared to generic 6% CPI calculators).
+                    above standard 6% CPI estimates).
                   </li>
 
                   <li>
-                    <strong className="text-white">10% Step-Up SIP &amp; Glide Phase:</strong>{' '}
-                    Starting monthly commitment drops from{' '}
+                    <strong className="text-white">Contribution &amp; Asset Mix:</strong>{' '}
+                    10% annual step-up reduces starting SIP from{' '}
                     <code className="ag-inline-code line-through opacity-75">
                       {formatInrCompact(evaluation.goal.flatMonthlySipInr)}/mo
                     </code>{' '}
                     to{' '}
                     <code className="ag-inline-code">
                       {formatInrCompact(evaluation.goal.stepUpInitialSipInr)}/mo
-                    </code>
-                    , currently positioned in{' '}
-                    <code className="ag-inline-code">
-                      {
-                        evaluation.goal.glideSchedule[
-                          evaluation.goal.activeGlidePhaseIndex
-                        ].phaseName
-                      }
                     </code>{' '}
-                    (
+                    across{' '}
                     <code className="ag-inline-code">
                       {evaluation.activeAllocation.equityPct}% Equity /{' '}
                       {evaluation.activeAllocation.debtPct}% Debt /{' '}
                       {evaluation.activeAllocation.liquidArbitragePct}% Liquid /{' '}
                       {evaluation.activeAllocation.goldPct}% Gold
                     </code>
-                    ).
+                    .
                   </li>
                 </ol>
 
-                {/* Clean Card Notice if Hard Quarantine Violation is Active */}
                 {evaluation.isHardQuarantineTriggered && (
                   <div className="ag-panel-card p-3.5 flex flex-wrap items-center justify-between gap-4 text-[12.5px]">
                     <div className="flex items-start gap-2.5 text-[#9DA3AE] flex-1 min-w-[220px]">
                       <AlertCircle className="w-4 h-4 text-[#F59E0B] shrink-0 mt-0.5" />
                       <div>
                         <span className="text-white font-medium">
-                          SEBI Reg 17 Quarantine Active:{' '}
+                          Suitability Hold:{' '}
                         </span>
                         {evaluation.regulatoryViolationsIntercepted[0]}
                       </div>
@@ -981,19 +903,19 @@ export default function WorkbenchPage({
                       className="ag-btn-blue shrink-0 px-3.5 py-1.5 rounded-full text-[12px] font-medium flex items-center gap-1.5"
                     >
                       <RotateCcw className="w-3.5 h-3.5" />
-                      <span>Apply Clamp &amp; Sign</span>
+                      <span>Restore Limit &amp; Sign</span>
                     </button>
                   </div>
                 )}
               </section>
 
-              {/* SECTION 3: 100% AMFI Direct Mutual Fund Portfolio & 2020 Crash Replay */}
-              <section className="space-y-3">
+              {/* SECTION 3: Recommended Direct Mutual Fund Portfolio */}
+              <section className="space-y-2.5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h2 className="text-[15px] font-semibold text-white tracking-tight">
-                    3. Curated 100% Direct-Plan Portfolio &amp; Stress Replay
+                    3. Recommended Direct Portfolio
                   </h2>
-                  <span className="text-[12px] font-mono text-[#9DA3AE]">
+                  <span className="text-[12px] text-[#9DA3AE]">
                     20Y Commission Saved:{' '}
                     <code className="ag-inline-code">
                       {formatInrCompact(evaluation.commissionSaved20YrInr)}
@@ -1001,20 +923,32 @@ export default function WorkbenchPage({
                   </span>
                 </div>
 
-                {/* Elevated Greyish Data Card (#181B21) */}
                 <div className="ag-panel-card overflow-hidden">
-                  <div className="ag-panel-header px-4 py-2.5 flex flex-wrap items-center justify-between gap-2 text-[11.5px] text-[#9DA3AE] font-mono">
+                  <div className="ag-panel-header px-4 py-2 flex flex-wrap items-center justify-between gap-2 text-[11.5px] text-[#9DA3AE]">
                     <span>
-                      direct_plan_basket.json • Max Stock Overlap:{' '}
-                      <strong className="text-white">
+                      Stock Overlap:{' '}
+                      <strong className="text-white font-mono">
                         {evaluation.maxPairwiseOverlapPct}%
                       </strong>{' '}
-                      (&lt;45% limit)
+                      • Direct TER:{' '}
+                      <strong className="text-white font-mono">
+                        {evaluation.weightedDirectTerPct}%
+                      </strong>{' '}
+                      (vs {evaluation.weightedRegularTerPct}% Regular)
                     </span>
-                    <span>
-                      Weighted TER: {evaluation.weightedDirectTerPct}% Direct vs{' '}
-                      {evaluation.weightedRegularTerPct}% Regular
-                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setSimulate2020Crash(!simulate2020Crash)}
+                      className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium transition ${
+                        simulate2020Crash
+                          ? 'ag-btn-blue'
+                          : 'ag-soft-pill text-[#9DA3AE]'
+                      }`}
+                    >
+                      {simulate2020Crash
+                        ? '2020 Crash Replay: On'
+                        : 'Show 2020 Crash Replay'}
+                    </button>
                   </div>
 
                   <div>
@@ -1027,22 +961,20 @@ export default function WorkbenchPage({
                               ? '1px solid rgba(255, 255, 255, 0.08)'
                               : 'none',
                         }}
-                        className="px-4 py-3 flex flex-wrap items-center justify-between gap-4 hover:bg-[#1E222A] transition text-[12.5px]"
+                        className="px-4 py-2.5 flex flex-wrap items-center justify-between gap-4 hover:bg-[#1E222A] transition text-[12.5px]"
                       >
                         <div className="min-w-0 flex-1">
                           <div className="text-white font-medium truncate">
                             {item.fund.schemeName}
                           </div>
-                          <div className="text-[11.5px] text-[#9DA3AE] font-mono flex flex-wrap items-center gap-2 mt-0.5">
-                            <span>{item.fund.isin}</span>
-                            <span>•</span>
+                          <div className="text-[11.5px] text-[#9DA3AE] flex flex-wrap items-center gap-2 mt-0.5">
                             <span>{item.fund.categoryLabel}</span>
                             <span>•</span>
-                            <span>
-                              TER {item.fund.directTerPct}% (Reg {item.fund.regularTerPct}%)
+                            <span className="font-mono">
+                              TER {item.fund.directTerPct}%
                             </span>
                             <span>•</span>
-                            <span className="text-[#A5C8FF]">
+                            <span className="font-mono text-[#A5C8FF]">
                               [{item.fund.docId}, p. {item.fund.citedPage}]
                             </span>
                           </div>
@@ -1060,7 +992,6 @@ export default function WorkbenchPage({
                     ))}
                   </div>
 
-                  {/* Subtle Embedded 2020 COVID Crash Trajectory Footer */}
                   {simulate2020Crash && (
                     <div
                       className="px-4 py-3"
@@ -1069,14 +1000,13 @@ export default function WorkbenchPage({
                         borderTop: '1px solid rgba(255, 255, 255, 0.09)',
                       }}
                     >
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-[11.5px] font-mono text-[#9DA3AE] mb-2">
-                        <span>March 2020 COVID-19 Replay (Jan–Dec 2020)</span>
-                        <span>
-                          Unadvised DIY: -39.1% • Fiducia Basket:{' '}
+                      <div className="flex flex-wrap items-center justify-between gap-2 text-[11.5px] text-[#9DA3AE] mb-2">
+                        <span>March 2020 Market Crash Drawdown</span>
+                        <span className="font-mono">
+                          Nifty 50: -38.4% • Selected Portfolio:{' '}
                           <strong className="text-[#8AB4F8]">
                             {evaluation.covid2020Stress.fiduciaBasketDrawdownPct}%
-                          </strong>{' '}
-                          (+{evaluation.covid2020Stress.cushionSavedPct}% protected)
+                          </strong>
                         </span>
                       </div>
                       <svg className="w-full h-14 overflow-visible" viewBox="0 0 330 60">
@@ -1120,22 +1050,14 @@ export default function WorkbenchPage({
                 </div>
               </section>
 
-              {/* SECTION 4: Grounded AMFI SID Response Stream */}
+              {/* SECTION 4: Scheme Document Lookup Response */}
               {ragResult && (
                 <section
-                  className="space-y-2 pt-4"
-                  style={{ borderTop: '1px solid rgba(255, 255, 255, 0.10)' }}
+                  className="space-y-1.5 pt-3"
+                  style={{ borderTop: '1px solid rgba(255, 255, 255, 0.09)' }}
                 >
-                  <div className="flex items-center justify-between text-[12px] text-[#9DA3AE]">
-                    <span className="font-medium text-white">
-                      Statutory Factsheet Verification •{' '}
-                      {ragResult.status === 'BLOCKED_BY_SEBI_GUARDRAIL'
-                        ? 'Intercepted by Pre-Gen SEBI Firewall'
-                        : '100% Page-Cited Response'}
-                    </span>
-                    <span className="font-mono text-[11px] text-[#8AB4F8]">
-                      SEBI Reg 15 &amp; 17 Verified
-                    </span>
+                  <div className="text-[12px] font-medium text-white">
+                    Scheme Document Reference
                   </div>
                   <p className="text-[13px] text-[#9DA3AE] leading-relaxed">
                     {ragResult.answerNarrative}
@@ -1146,89 +1068,61 @@ export default function WorkbenchPage({
           </main>
 
           {/* -----------------------------------------------------------------
-              PINNED BOTTOM PROMPT DOCK (Elevated Greyish #1A1D24 + Polished Border)
+              PINNED BOTTOM PROMPT DOCK (Minimalist & Clean)
           ----------------------------------------------------------------- */}
           <div className="shrink-0 px-4 sm:px-8 pb-4 pt-1">
-            <div className="ag-prompt-dock max-w-[740px] mx-auto p-3.5">
-              {/* Quick Preset Chips Row */}
-              <div className="flex flex-wrap items-center gap-1.5 mb-2.5">
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleExecuteRagQuery(
-                      'What is the exit load and Direct TER of Parag Parikh Flexi Cap Fund?'
-                    )
-                  }
-                  className="ag-soft-pill px-2.5 py-0.5 rounded-md text-[11px] font-mono"
-                >
-                  PPFAS Exit Load [p. 14]
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleExecuteRagQuery(
-                      'How is Kotak Equity Arbitrage Fund taxed under Section 112A?'
-                    )
-                  }
-                  className="ag-soft-pill px-2.5 py-0.5 rounded-md text-[11px] font-mono"
-                >
-                  Kotak Arbitrage Sec 112A Tax
-                </button>
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleExecuteRagQuery(
-                      'Guarantee me a 25% return in Bitcoin and recover my F&O loss'
-                    )
-                  }
-                  className="ag-soft-pill px-2.5 py-0.5 rounded-md text-[11px] font-mono"
-                >
-                  Test SEBI Guardrail Block (G-01/G-03)
-                </button>
+            <div className="max-w-[740px] mx-auto space-y-2">
+              {/* Sleek Quick-Ask Suggestions Row Above Dock */}
+              <div className="flex flex-wrap items-center gap-1.5">
+                {[
+                  'Exit load on Parag Parikh Flexi Cap?',
+                  'Taxation on Kotak Arbitrage Fund?',
+                  'Can we guarantee a 25% return?',
+                ].map((suggestion) => (
+                  <button
+                    key={suggestion}
+                    type="button"
+                    onClick={() => handleExecuteRagQuery(suggestion)}
+                    className="ag-soft-pill px-2.5 py-1 rounded-full text-[11.5px] text-[#9DA3AE] hover:text-white flex items-center gap-1.5"
+                  >
+                    <Sparkles className="w-3 h-3 text-[#8AB4F8]" />
+                    <span>{suggestion}</span>
+                  </button>
+                ))}
               </div>
 
-              <input
-                type="text"
-                value={ragQuery}
-                onChange={(e) => setRagQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') handleExecuteRagQuery();
-                }}
-                placeholder="Ask official AMFI SIDs & factsheets or test a SEBI compliance rule..."
-                className="w-full bg-transparent text-[13px] text-white placeholder-[#636870] outline-none mb-2"
-              />
+              {/* Clean Input Box with Only Input + Send Button */}
+              <div className="ag-prompt-dock px-3.5 py-2.5 flex items-center gap-3">
+                <input
+                  type="text"
+                  value={ragQuery}
+                  onChange={(e) => setRagQuery(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') handleExecuteRagQuery();
+                  }}
+                  placeholder="Ask scheme documents about exit loads, expense ratios, or tax rules..."
+                  className="flex-1 bg-transparent text-[13px] text-white placeholder-[#636870] outline-none"
+                />
 
-              {/* Bottom Bar inside Prompt Box with Circular Antigravity Blue Send Button */}
-              <div className="flex items-center justify-between text-[11.5px] text-[#9DA3AE] pt-1">
-                <span className="font-mono text-[#636870]">
-                  + Fiduciary RAG Engine • Official AMFI SID Corpus
-                </span>
-
-                <div className="flex items-center gap-2.5">
-                  <span className="text-[11px] text-[#9DA3AE] font-mono">
-                    {ragLoading ? 'Verifying...' : 'Zero-Hallucination'}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleExecuteRagQuery()}
-                    disabled={ragLoading}
-                    title="Query Statutory Factsheets"
-                    className="ag-btn-blue w-7 h-7 rounded-full flex items-center justify-center shadow-sm"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => handleExecuteRagQuery()}
+                  disabled={ragLoading}
+                  title="Search Scheme Documents"
+                  className="ag-btn-blue w-7 h-7 rounded-full shrink-0 flex items-center justify-center shadow-sm"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         {/* -------------------------------------------------------------------
-            PANE 3: ADJUSTABLE RIGHT INSPECTOR RAIL (#131519)
+            PANE 3: ADJUSTABLE RIGHT INSPECTOR RAIL
         ------------------------------------------------------------------- */}
         {showRightPane && (
           <>
-            {/* Right Interactive Drag-Resize Splitter */}
             <div
               onMouseDown={() => startResize('RIGHT')}
               title="Drag to resize right inspector"
@@ -1242,19 +1136,19 @@ export default function WorkbenchPage({
               className="ag-sidebar-right shrink-0 h-full p-3.5 flex flex-col justify-between overflow-y-auto select-none"
             >
               <div className="space-y-5">
-                {/* Dark Grey Pill Search Input with Subtle Blue Outline (Never White!) */}
+                {/* Search Input */}
                 <div className="relative">
                   <Search className="w-3.5 h-3.5 text-[#9DA3AE] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="text"
                     value={inspectorSearch}
                     onChange={(e) => setInspectorSearch(e.target.value)}
-                    placeholder="Search client folios or SIDs..."
+                    placeholder="Filter client folios..."
                     className="ag-search-pill w-full pl-9 pr-3.5 py-1.5 text-[12px] placeholder-[#636870] outline-none transition"
                   />
                 </div>
 
-                {/* Clean Icon + Label Action List */}
+                {/* Action Links (No Duplicate 2020 Crash Button) */}
                 <div className="space-y-1 text-[12.5px]">
                   <button
                     type="button"
@@ -1262,7 +1156,7 @@ export default function WorkbenchPage({
                     className="ag-row-inactive w-full px-2.5 py-1.5 rounded-lg flex items-center gap-2.5 transition"
                   >
                     <FileText className="w-3.5 h-3.5 text-[#8AB4F8] shrink-0" />
-                    <span className="truncate">Review &amp; Sign Suitability Plan</span>
+                    <span className="truncate">Approve &amp; Sign Plan</span>
                   </button>
 
                   <button
@@ -1272,22 +1166,11 @@ export default function WorkbenchPage({
                     className="ag-row-inactive w-full px-2.5 py-1.5 rounded-lg disabled:opacity-40 flex items-center gap-2.5 transition"
                   >
                     <FileText className="w-3.5 h-3.5 text-[#636870] shrink-0" />
-                    <span className="truncate">Open Signed PDF Dossier</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setSimulate2020Crash(!simulate2020Crash)}
-                    className="ag-row-inactive w-full px-2.5 py-1.5 rounded-lg flex items-center gap-2.5 transition"
-                  >
-                    <Terminal className="w-3.5 h-3.5 text-[#636870] shrink-0" />
-                    <span className="truncate">
-                      March 2020 Crash Replay ({simulate2020Crash ? 'On' : 'Off'})
-                    </span>
+                    <span className="truncate">Export Client PDF Dossier</span>
                   </button>
                 </div>
 
-                {/* ARTIFACTS SECTION (Matches Antigravity "Artifacts 2") */}
+                {/* ARTIFACTS SECTION */}
                 <div className="space-y-2">
                   <div className="px-2 flex items-center gap-1.5 text-[11px] font-medium text-[#636870]">
                     <span>Artifacts</span>
@@ -1300,7 +1183,7 @@ export default function WorkbenchPage({
                     <div className="flex items-center justify-between text-white font-medium">
                       <span className="flex items-center gap-2 truncate">
                         <FileText className="w-3.5 h-3.5 text-[#8AB4F8] shrink-0" />
-                        <span className="truncate">SEBI Reg 19 SHA-256 Seal</span>
+                        <span className="truncate">Digital Signature Seal</span>
                       </span>
                       {activeFolio.sha256DigitalSeal && (
                         <button
@@ -1313,7 +1196,7 @@ export default function WorkbenchPage({
                             setTimeout(() => setCopiedSeal(false), 1500);
                           }}
                           className="text-[#9DA3AE] hover:text-white"
-                          title="Copy SHA-256 Hash"
+                          title="Copy Signature Hash"
                         >
                           {copiedSeal ? (
                             <Check className="w-3.5 h-3.5 text-[#10B981]" />
@@ -1326,30 +1209,30 @@ export default function WorkbenchPage({
                     <div className="mt-1 font-mono text-[10.5px] text-[#9DA3AE] truncate">
                       {isSignedAndValid && activeFolio.sha256DigitalSeal
                         ? activeFolio.sha256DigitalSeal
-                        : 'Quarantined (HTTP 403 — Awaiting Sign-Off)'}
+                        : 'Unsigned Draft — Awaiting Approval'}
                     </div>
                   </div>
 
                   <div className="ag-row-inactive px-2.5 py-1.5 rounded-lg text-[12px] flex items-center gap-2 truncate">
                     <FileText className="w-3.5 h-3.5 text-[#636870] shrink-0" />
                     <span className="truncate font-mono text-[11.5px]">
-                      [{evaluation.basket[0]?.fund.docId}, p.{' '}
-                      {evaluation.basket[0]?.fund.citedPage}]
+                      {evaluation.basket[0]?.fund.docId} (p.{' '}
+                      {evaluation.basket[0]?.fund.citedPage})
                     </span>
                   </div>
                 </div>
 
-                {/* FIDUCIARY VERIFICATION TASKS SECTION (Matches Antigravity "Background Tasks 6") */}
+                {/* VERIFICATION CHECKS SECTION */}
                 <div className="space-y-1.5">
                   <div className="px-2 flex items-center gap-1.5 text-[11px] font-medium text-[#636870]">
-                    <span>Fiduciary Verification Tasks</span>
+                    <span>Verification Checks</span>
                     <span className="px-1.5 py-0.2 rounded-full bg-[#22252E] text-[#9DA3AE] text-[10px] font-mono">
-                      {verificationTasks.length}
+                      {verificationChecks.length}
                     </span>
                   </div>
 
                   <div className="space-y-1">
-                    {verificationTasks.map((task, i) => (
+                    {verificationChecks.map((task, i) => (
                       <div
                         key={i}
                         className="px-2.5 py-1 rounded-md text-[12px] text-[#9DA3AE] flex items-center gap-2 truncate"
@@ -1365,15 +1248,6 @@ export default function WorkbenchPage({
                     ))}
                   </div>
                 </div>
-              </div>
-
-              {/* Clean Fiduciary Compliance Footnote (Zero Admin Telemetry) */}
-              <div
-                className="pt-3 px-2 text-[11px] text-[#636870] flex items-center justify-between font-mono"
-                style={{ borderTop: '1px solid rgba(255, 255, 255, 0.09)' }}
-              >
-                <span>SEBI IA Reg 16, 17 &amp; 19</span>
-                <span>{sebiRegNo}</span>
               </div>
             </aside>
           </>

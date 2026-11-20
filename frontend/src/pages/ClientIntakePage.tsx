@@ -1,7 +1,6 @@
 /**
- * Screen 03: Client 2-Minute Fast Intake Flow (/intake)
- * Distraction-free, 3-step progressive client discovery form that saves a new
- * ClientFolioRecord directly into the Antigravity Adviser Workspace.
+ * Screen 03: Client Fast Intake Flow (/intake)
+ * Clean, distraction-free 3-step client onboarding form with zero internal lore.
  */
 
 import React, { useState } from 'react';
@@ -15,7 +14,7 @@ import {
   VolatilityPreferenceOption,
   formatInrCompact,
 } from '../services/localQuantEngine';
-import { ArrowLeft, ArrowRight, CheckCircle2, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2 } from 'lucide-react';
 
 interface ClientIntakePageProps {
   onAddClientFolio: (folio: ClientFolioRecord) => void;
@@ -77,21 +76,21 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
   };
 
   return (
-    <div className="min-h-screen bg-agCanvas text-agTextPrimary flex flex-col justify-between px-4 py-8">
+    <div className="ag-workspace-root min-h-screen flex flex-col justify-between px-4 py-8">
       {/* Top Header */}
-      <div className="max-w-2xl w-full mx-auto flex items-center justify-between">
-        <Link to="/workbench" className="flex items-center gap-2 text-xs text-agTextSecondary hover:text-white transition">
+      <div className="max-w-xl w-full mx-auto flex items-center justify-between">
+        <Link
+          to="/workbench"
+          className="flex items-center gap-2 text-xs text-[#9DA3AE] hover:text-white transition"
+        >
           <ArrowLeft className="w-3.5 h-3.5" />
-          <span>Back to Adviser Workspace</span>
+          <span>Back to Workspace</span>
         </Link>
-        <div className="inline-flex items-center gap-1.5 text-xs text-agTextSecondary">
-          <ShieldCheck className="w-3.5 h-3.5 text-agBlue" />
-          <span>SEBI Reg 16 & 17 Suitability Intake</span>
-        </div>
+        <span className="text-xs text-[#636870]">New Client Onboarding</span>
       </div>
 
       {/* Main Single-Column Card */}
-      <div className="max-w-xl w-full mx-auto my-8 bg-agPanel border border-agBorder rounded-2xl p-6 md:p-8">
+      <div className="ag-panel-card max-w-xl w-full mx-auto my-auto p-6 md:p-8">
         {/* Progress Indicator */}
         <div className="flex items-center justify-between mb-6">
           {[1, 2, 3].map((s) => (
@@ -99,8 +98,8 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
               <div
                 className={`w-6 h-6 rounded-full text-xs font-semibold flex items-center justify-center ${
                   step >= s
-                    ? 'bg-agBlue text-white'
-                    : 'bg-agInput text-agTextMuted border border-agBorder'
+                    ? 'ag-btn-blue'
+                    : 'bg-[#14171D] text-[#636870] border border-[#262A34]'
                 }`}
               >
                 {s}
@@ -108,7 +107,7 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
               {s < 3 && (
                 <div
                   className={`h-0.5 flex-1 mx-2 ${
-                    step > s ? 'bg-agBlue' : 'bg-agBorder'
+                    step > s ? 'bg-[#1A73E8]' : 'bg-[#252833]'
                   }`}
                 />
               )}
@@ -120,17 +119,17 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
           {step === 1 && (
             <div className="space-y-4">
               <div>
-                <h1 className="text-xl font-bold tracking-tight">
-                  Step 1: Household Cash Flow & Obligations
+                <h1 className="text-lg font-semibold text-white tracking-tight">
+                  Step 1: Household Cash Flow
                 </h1>
-                <p className="text-xs text-agTextSecondary mt-0.5">
-                  Used to compute your objective Financial Safety Cushion (Risk Capacity).
+                <p className="text-xs text-[#9DA3AE] mt-0.5">
+                  Monthly income, living expenses, and active loan obligations.
                 </p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="sm:col-span-2">
-                  <label className="block text-xs text-agTextSecondary mb-1">
+                  <label className="block text-xs text-[#9DA3AE] mb-1">
                     Client / Family Name
                   </label>
                   <input
@@ -139,11 +138,11 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
                     value={clientName}
                     onChange={(e) => setClientName(e.target.value)}
                     placeholder="e.g., Ananya & Karthik Nair"
-                    className="w-full bg-agInput border border-agBorder focus:border-agBlue rounded-lg px-3 py-2 text-sm text-white outline-none"
+                    className="w-full bg-[#131519] border border-[#2A2E39] focus:border-[#1A73E8] rounded-lg px-3 py-2 text-sm text-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-agTextSecondary mb-1">
+                  <label className="block text-xs text-[#9DA3AE] mb-1">
                     Primary Earner Age
                   </label>
                   <input
@@ -152,15 +151,15 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
                     max={85}
                     value={clientAge}
                     onChange={(e) => setClientAge(Number(e.target.value))}
-                    className="w-full bg-agInput border border-agBorder focus:border-agBlue rounded-lg px-3 py-2 text-sm text-white outline-none"
+                    className="w-full bg-[#131519] border border-[#2A2E39] focus:border-[#1A73E8] rounded-lg px-3 py-2 text-sm text-white outline-none"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-agTextSecondary">Net Monthly Take-Home Income</span>
-                  <span className="font-semibold text-white">
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-[#9DA3AE]">Net Monthly Take-Home Income</span>
+                  <span className="font-mono font-semibold text-white">
                     {formatInrCompact(netMonthlyIncomeInr)} / mo
                   </span>
                 </div>
@@ -176,9 +175,9 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
               </div>
 
               <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-agTextSecondary">Monthly Household Living Expenses</span>
-                  <span className="font-semibold text-white">
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-[#9DA3AE]">Monthly Household Living Expenses</span>
+                  <span className="font-mono font-semibold text-white">
                     {formatInrCompact(monthlyLivingExpensesInr)} / mo
                   </span>
                 </div>
@@ -194,11 +193,9 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
               </div>
 
               <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-agTextSecondary">
-                    Total Monthly Loan EMIs (Home, Car, Personal)
-                  </span>
-                  <span className="font-semibold text-white">
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-[#9DA3AE]">Total Monthly Loan EMIs</span>
+                  <span className="font-mono font-semibold text-white">
                     {formatInrCompact(totalMonthlyEmiInr)} / mo
                   </span>
                 </div>
@@ -214,27 +211,27 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
               </div>
 
               <div>
-                <label className="block text-xs text-agTextSecondary mb-1">
-                  Employment & Income Stability Tier
+                <label className="block text-xs text-[#9DA3AE] mb-1">
+                  Employment &amp; Income Stability
                 </label>
                 <select
                   value={incomeStability}
                   onChange={(e) =>
                     setIncomeStability(e.target.value as IncomeStabilityTier)
                   }
-                  className="w-full bg-agInput border border-agBorder rounded-lg px-3 py-2 text-xs text-white outline-none"
+                  className="w-full bg-[#131519] border border-[#2A2E39] rounded-lg px-3 py-2 text-xs text-white outline-none"
                 >
                   <option value="GOVERNMENT_PSU_TENURED">
-                    Government / PSU / Tenured Corporate Officer (100/100)
+                    Government / PSU / Tenured Corporate Role
                   </option>
                   <option value="SALARIED_MNC_PROFESSIONAL">
-                    Salaried Private MNC / Established Doctor or CA (80/100)
+                    Salaried Private Enterprise / Established Practice
                   </option>
                   <option value="ESTABLISHED_BUSINESS_SME">
-                    Established Business Owner / Tier-1 SME (50/100)
+                    Business Owner / SME
                   </option>
                   <option value="FREELANCE_COMMISSION_FOUNDER">
-                    Freelancer / Commission-Driven / Startup Founder (30/100)
+                    Independent Consultant / Variable Income
                   </option>
                 </select>
               </div>
@@ -243,9 +240,9 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-5 py-2 rounded-full bg-agBlue hover:bg-agBlueHover text-white text-xs font-semibold transition flex items-center gap-1.5"
+                  className="ag-btn-blue px-5 py-2 rounded-full text-xs font-medium flex items-center gap-1.5"
                 >
-                  <span>Next: Savings & Family Goal</span>
+                  <span>Next: Savings &amp; Goal</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -255,20 +252,20 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
           {step === 2 && (
             <div className="space-y-4">
               <div>
-                <h1 className="text-xl font-bold tracking-tight">
-                  Step 2: Emergency Reserve & Primary Family Goal
+                <h1 className="text-lg font-semibold text-white tracking-tight">
+                  Step 2: Emergency Reserve &amp; Financial Goal
                 </h1>
-                <p className="text-xs text-agTextSecondary mt-0.5">
-                  Models segmented Indian inflation (8.5% Education, 9.5% Medical) and glide path.
+                <p className="text-xs text-[#9DA3AE] mt-0.5">
+                  Existing liquid savings and target timeline.
                 </p>
               </div>
 
               <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-agTextSecondary">
-                    Liquid Emergency Savings (Bank A/c + Fixed Deposits)
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-[#9DA3AE]">
+                    Liquid Savings (Bank Balance + Fixed Deposits)
                   </span>
-                  <span className="font-semibold text-white">
+                  <span className="font-mono font-semibold text-white">
                     {formatInrCompact(liquidSavingsInr)}
                   </span>
                 </div>
@@ -285,30 +282,30 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs text-agTextSecondary mb-1">
-                    Goal Title
+                  <label className="block text-xs text-[#9DA3AE] mb-1">
+                    Goal Name
                   </label>
                   <input
                     type="text"
                     value={goalName}
                     onChange={(e) => setGoalName(e.target.value)}
-                    className="w-full bg-agInput border border-agBorder rounded-lg px-3 py-2 text-xs text-white outline-none"
+                    className="w-full bg-[#131519] border border-[#2A2E39] rounded-lg px-3 py-2 text-xs text-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs text-agTextSecondary mb-1">
-                    Segmented Inflation Category
+                  <label className="block text-xs text-[#9DA3AE] mb-1">
+                    Goal Category
                   </label>
                   <select
                     value={goalCategory}
                     onChange={(e) => setGoalCategory(e.target.value as GoalCategory)}
-                    className="w-full bg-agInput border border-agBorder rounded-lg px-3 py-2 text-xs text-white outline-none"
+                    className="w-full bg-[#131519] border border-[#2A2E39] rounded-lg px-3 py-2 text-xs text-white outline-none"
                   >
                     <option value="CHILD_HIGHER_EDUCATION">
                       Child Higher Education (8.5% Infl.)
                     </option>
                     <option value="HEALTHCARE_MEDICAL_CORPUS">
-                      Healthcare / Medical Fund (9.5% Infl.)
+                      Healthcare &amp; Medical Reserve (9.5% Infl.)
                     </option>
                     <option value="RETIREMENT_LIVING">
                       Retirement Living Corpus (6.0% Infl.)
@@ -317,16 +314,16 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
                       Real Estate Downpayment (7.0% Infl.)
                     </option>
                     <option value="MILESTONE_DISCRETIONARY">
-                      Family Milestone / Wedding (6.0% Infl.)
+                      Family Milestone (6.0% Infl.)
                     </option>
                   </select>
                 </div>
               </div>
 
               <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-agTextSecondary">Present Cost of Goal Today</span>
-                  <span className="font-semibold text-white">
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-[#9DA3AE]">Current Cost of Goal Today</span>
+                  <span className="font-mono font-semibold text-white">
                     {formatInrCompact(presentGoalCostInr)}
                   </span>
                 </div>
@@ -342,9 +339,11 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
               </div>
 
               <div>
-                <div className="flex justify-between text-xs mb-1">
-                  <span className="text-agTextSecondary">Years Remaining Until Goal Maturity</span>
-                  <span className="font-semibold text-white">{horizonYears} Years</span>
+                <div className="flex justify-between text-xs mb-1.5">
+                  <span className="text-[#9DA3AE]">Time Horizon</span>
+                  <span className="font-mono font-semibold text-white">
+                    {horizonYears} Years
+                  </span>
                 </div>
                 <input
                   type="range"
@@ -361,16 +360,16 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="px-4 py-2 rounded-full bg-agInput border border-agBorder text-xs text-agTextSecondary hover:text-white"
+                  className="ag-soft-pill px-4 py-2 rounded-full text-xs"
                 >
                   ← Back
                 </button>
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="px-5 py-2 rounded-full bg-agBlue hover:bg-agBlueHover text-white text-xs font-semibold transition flex items-center gap-1.5"
+                  className="ag-btn-blue px-5 py-2 rounded-full text-xs font-medium flex items-center gap-1.5"
                 >
-                  <span>Next: Market Crash Comfort</span>
+                  <span>Next: Risk Preferences</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -380,82 +379,82 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
           {step === 3 && (
             <div className="space-y-4">
               <div>
-                <h1 className="text-xl font-bold tracking-tight">
-                  Step 3: Market Crash Comfort (Risk Tolerance)
+                <h1 className="text-lg font-semibold text-white tracking-tight">
+                  Step 3: Market Volatility Preferences
                 </h1>
-                <p className="text-xs text-agTextSecondary mt-0.5">
-                  3 plain-language behavioral checks to measure psychological drawdown composure.
+                <p className="text-xs text-[#9DA3AE] mt-0.5">
+                  How the household responds to temporary market drawdowns.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs text-agTextSecondary mb-1.5">
-                  1. If your ₹10 Lakh portfolio dropped to ₹7.5 Lakh (-25%) in 30 days during a market crash, what would you do?
+                <label className="block text-xs text-[#9DA3AE] mb-1.5">
+                  1. If your portfolio dropped 25% during a market correction, how would you respond?
                 </label>
                 <select
                   value={drawdownReaction}
                   onChange={(e) =>
                     setDrawdownReaction(e.target.value as DrawdownReactionOption)
                   }
-                  className="w-full bg-agInput border border-agBorder rounded-lg px-3 py-2 text-xs text-white outline-none"
+                  className="w-full bg-[#131519] border border-[#2A2E39] rounded-lg px-3 py-2 text-xs text-white outline-none"
                 >
                   <option value="PANIC_SELL_ALL">
-                    Sell everything immediately to prevent further loss (10 pts)
+                    Exit all investments immediately to prevent further loss
                   </option>
                   <option value="LIQUIDATE_HALF_TO_FD">
-                    Sell 50% and move to safe bank Fixed Deposits (35 pts)
+                    Move 50% into bank fixed deposits
                   </option>
                   <option value="HOLD_AND_MAINTAIN_SIP">
-                    Do nothing, continue monthly SIPs and wait for recovery (70 pts)
+                    Stay invested and continue regular monthly SIPs
                   </option>
                   <option value="BUY_THE_DIP_AGGRESSIVELY">
-                    Invest additional capital to buy the market dip (100 pts)
+                    Invest additional surplus to accumulate at lower levels
                   </option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs text-agTextSecondary mb-1.5">
-                  2. Which return vs. fluctuation trade-off matches your family philosophy?
+                <label className="block text-xs text-[#9DA3AE] mb-1.5">
+                  2. Preferred balance between capital stability and growth:
                 </label>
                 <select
                   value={volatilityPreference}
                   onChange={(e) =>
                     setVolatilityPreference(e.target.value as VolatilityPreferenceOption)
                   }
-                  className="w-full bg-agInput border border-agBorder rounded-lg px-3 py-2 text-xs text-white outline-none"
+                  className="w-full bg-[#131519] border border-[#2A2E39] rounded-lg px-3 py-2 text-xs text-white outline-none"
                 >
                   <option value="CAPITAL_PROTECTION_PRIORITY">
-                    Capital protection priority with predictable, stable returns (20 pts)
+                    Prioritize capital preservation with steady returns
                   </option>
                   <option value="MODERATE_GROWTH_BALANCED">
-                    Balanced long-term growth with moderate temporary dips (60 pts)
+                    Balanced growth with moderate fluctuations
                   </option>
                   <option value="HIGH_RETURN_HIGH_VOLATILITY">
-                    Maximum long-term wealth expansion despite sharp swings (100 pts)
+                    Long-term equity growth despite short-term volatility
                   </option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs text-agTextSecondary mb-1.5">
-                  3. What was your actual behavior during past market crashes (e.g. March 2020 COVID)?
+                <label className="block text-xs text-[#9DA3AE] mb-1.5">
+                  3. Prior investing experience through market cycles:
                 </label>
                 <select
                   value={pastCrisisExperience}
                   onChange={(e) =>
                     setPastCrisisExperience(e.target.value as PastCrisisExperienceOption)
                   }
-                  className="w-full bg-agInput border border-agBorder rounded-lg px-3 py-2 text-xs text-white outline-none"
+                  className="w-full bg-[#131519] border border-[#2A2E39] rounded-lg px-3 py-2 text-xs text-white outline-none"
                 >
                   <option value="PANICKED_SOLD_AT_LOSS">
-                    Panicked, exited equity funds at a loss, and stayed in FDs (10 pts)
+                    Exited equity markets during a previous downturn
                   </option>
                   <option value="POST_2021_NO_CRASH_EXPERIENCE">
-                    Started investing after 2021 — have not experienced a major crash (50 pts)
+                    Began investing recently (post-2021)
                   </option>
                   <option value="STAYED_INVESTED_2008_OR_2020">
-                    Stayed 100% disciplined through 2020 COVID or 2008 crash (100 pts)
+                    Stayed invested through the 2020 or 2008 market downturns
                   </option>
                 </select>
               </div>
@@ -464,16 +463,16 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="px-4 py-2 rounded-full bg-agInput border border-agBorder text-xs text-agTextSecondary hover:text-white"
+                  className="ag-soft-pill px-4 py-2 rounded-full text-xs"
                 >
                   ← Back
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-full bg-agBlue hover:bg-agBlueHover text-white text-xs font-semibold transition flex items-center gap-1.5"
+                  className="ag-btn-blue px-6 py-2 rounded-full text-xs font-medium flex items-center gap-1.5"
                 >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Compute Fiduciary Plan in Workspace</span>
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span>Create Client Folio</span>
                 </button>
               </div>
             </div>
@@ -481,9 +480,7 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
         </form>
       </div>
 
-      <div className="text-center text-[11px] text-agTextMuted">
-        Zero LLM Math • Instant Deterministic Risk Capacity & Segmented Inflation Evaluation
-      </div>
+      <div />
     </div>
   );
 }
