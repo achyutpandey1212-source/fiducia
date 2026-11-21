@@ -86,7 +86,14 @@ export default function ClientIntakePage({ onAddClientFolio }: ClientIntakePageP
           <ArrowLeft className="w-3.5 h-3.5" />
           <span>Back to Workspace</span>
         </Link>
-        <span className="text-xs text-[#636870]">New Client Onboarding</span>
+        <div className="flex items-center gap-2 text-xs text-[#636870]">
+          <img
+            src="/logo/fiducia-logo.png"
+            alt="Fiducia"
+            className="w-4 h-4 object-contain rounded"
+          />
+          <span>Fiducia Client Onboarding</span>
+        </div>
       </div>
 
       {/* Main Single-Column Card */}

@@ -137,7 +137,11 @@ export default function SystemTelemetryPage() {
               <span>Return to Adviser Workspace</span>
             </Link>
             <h1 className="text-xl md:text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-              <Cpu className="w-5 h-5 text-agBlue" />
+              <img
+                src="/logo/fiducia-logo.png"
+                alt="Fiducia"
+                className="w-6 h-6 object-contain rounded"
+              />
               <span>Fiducia Infrastructure &amp; Unified AI Gateway Telemetry</span>
             </h1>
           </div>

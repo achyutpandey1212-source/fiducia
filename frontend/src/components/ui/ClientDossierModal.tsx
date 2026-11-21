@@ -43,7 +43,12 @@ export const ClientDossierBody: React.FC<ClientDossierDocumentProps> = ({
       {/* 1. Statutory Letterhead */}
       <div className="flex items-start justify-between pb-4 mb-5 border-b-2 border-zinc-900">
         <div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5">
+            <img
+              src="/logo/fiducia-logo.png"
+              alt="Fiducia"
+              className="w-6 h-6 object-contain rounded bg-black p-0.5"
+            />
             <span className="font-machina font-bold text-lg tracking-tight text-zinc-950">
               FIDUCIA
             </span>

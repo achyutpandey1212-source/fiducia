@@ -435,10 +435,14 @@ export default function WorkbenchPage({
           <div className="flex items-center gap-1.5">
             <Link
               to="/"
-              className="w-6 h-6 rounded-md flex items-center justify-center font-machina font-bold text-xs text-white hover:bg-[#22252E] transition"
+              className="w-6 h-6 rounded-md flex items-center justify-center p-0.5 hover:bg-[#22252E] transition shrink-0"
               title="Fiducia Home"
             >
-              Λ
+              <img
+                src="/logo/fiducia-logo.png"
+                alt="Fiducia"
+                className="w-5 h-5 object-contain rounded"
+              />
             </Link>
             <button
               type="button"
@@ -703,8 +707,12 @@ export default function WorkbenchPage({
                     style={{ backdropFilter: 'blur(16px)' }}
                   >
                     <div className="flex items-center gap-2.5 pb-2.5 border-b border-[#262A34]">
-                      <div className="w-8 h-8 rounded-full bg-[#1A73E8]/20 border border-[#1A73E8]/40 flex items-center justify-center text-[#8AB4F8] font-bold text-xs shrink-0">
-                        {firebaseUser?.email ? firebaseUser.email[0].toUpperCase() : 'RIA'}
+                      <div className="w-8 h-8 rounded-lg bg-[#14171D] border border-[#2B303C] flex items-center justify-center p-1.5 shrink-0 overflow-hidden">
+                        <img
+                          src="/logo/fiducia-logo.png"
+                          alt="Fiducia"
+                          className="w-full h-full object-contain"
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="text-xs font-semibold text-white truncate">
@@ -808,8 +816,12 @@ export default function WorkbenchPage({
             /* CLEAN, FRESH EMPTY WORKSPACE STATE FOR NEW USERS */
             <main className="flex-1 flex flex-col items-center justify-center px-6 text-center select-none">
               <div className="max-w-md space-y-4">
-                <div className="w-10 h-10 rounded-xl bg-[#181B21] border border-[#282C37] mx-auto flex items-center justify-center font-machina font-bold text-base text-white">
-                  Λ
+                <div className="w-12 h-12 rounded-xl bg-[#181B21] border border-[#282C37] mx-auto flex items-center justify-center p-2.5 shadow-lg">
+                  <img
+                    src="/logo/fiducia-logo.png"
+                    alt="Fiducia Emblem"
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <h2 className="text-lg font-semibold text-white tracking-tight">
                   No Active Client Folio Selected

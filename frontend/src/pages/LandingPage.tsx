@@ -136,8 +136,12 @@ export default function LandingPage({ currentUser }: LandingPageProps) {
         }}
       >
         <Link to="/" className="flex items-center gap-2.5">
-          <div className="w-6 h-6 rounded-md bg-[#20232B] border border-[#323642] flex items-center justify-center font-machina font-bold text-xs text-white">
-            Λ
+          <div className="w-7 h-7 rounded-md bg-[#181B21] border border-[#323642] flex items-center justify-center p-1 shrink-0 overflow-hidden">
+            <img
+              src="/logo/fiducia-logo.png"
+              alt="Fiducia Emblem"
+              className="w-full h-full object-contain"
+            />
           </div>
           <span className="font-machina text-base font-bold tracking-tight text-white">
             Fiducia
@@ -682,7 +686,14 @@ export default function LandingPage({ currentUser }: LandingPageProps) {
         </div>
 
         <div className="mt-8 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#636870] gap-2">
-          <span>Fiducia — Fiduciary Advisory Operating System</span>
+          <div className="flex items-center gap-2">
+            <img
+              src="/logo/fiducia-logo.png"
+              alt="Fiducia"
+              className="w-4 h-4 object-contain rounded"
+            />
+            <span>Fiducia — Fiduciary Advisory Operating System</span>
+          </div>
           <span>Built for Registered Investment Advisers</span>
         </div>
       </footer>
