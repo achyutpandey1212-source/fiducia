@@ -45,8 +45,8 @@ Fiducia uses a **Dual-Tier Reactive Architecture**. All quantitative math execut
 
 ```mermaid
 flowchart TB
-    subgraph Client ["Frontend — Antigravity 3-Pane Adviser Workbench (React 18 + Vite)"]
-        UI["3-Pane Studio Interface\n(Resizable Left Rail • Center Stream • Right Inspector)"]
+    subgraph Client ["Frontend — Fiducia 3-Pane Fiduciary Workbench (React 18 + Vite)"]
+        UI["3-Pane Institutional Interface\n(Resizable Left Rail • Center Stream • Right Inspector)"]
         LocalQuant["Tier-1 Local V8 Quant Engine\n(< 0.20ms Synchronous Math at 60fps)"]
         Dossier["A4 Print & PDF Dossier Engine\n(@media print Statutory Letterhead)"]
         UI <--> LocalQuant
@@ -145,10 +145,10 @@ fiducia/
 │   ├── src/
 │   │   ├── components/ui/           # A4 Client Suitability Dossier Modal & Primitives
 │   │   ├── pages/
-│   │   │   ├── LandingPage.tsx      # Hormozi Value Equation + Practice Revenue Calculator
+│   │   │   ├── LandingPage.tsx      # Fiduciary Practice Revenue & Capacity Calculator
 │   │   │   ├── AuthPage.tsx         # Firebase Email, Google OAuth & 1-Click Guest Login
 │   │   │   ├── ClientIntakePage.tsx # 3-Step Progressive Household Onboarding Wizard
-│   │   │   ├── WorkbenchPage.tsx    # 3-Pane Antigravity Adviser Cockpit
+│   │   │   ├── WorkbenchPage.tsx    # 3-Pane Proprietary Adviser Cockpit
 │   │   │   └── SystemTelemetryPage.tsx # Multi-Key Pool, LRU Cache & Keep-Alive Monitor
 │   │   └── services/
 │   │       ├── localQuantEngine.ts  # <0.20ms Browser V8 Deterministic Quant Core
