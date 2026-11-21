@@ -7,6 +7,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { apiUrl } from '../services/apiConfig';
 import {
   ArrowLeft,
   Cpu,
@@ -107,7 +108,7 @@ export default function SystemTelemetryPage() {
   const fetchTelemetry = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/v1/admin/telemetry');
+      const res = await fetch(apiUrl('/api/v1/admin/telemetry'));
       if (res.ok) {
         const data = (await res.json()) as AdminTelemetryPayload;
         setTelemetry(data);

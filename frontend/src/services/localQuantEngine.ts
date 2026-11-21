@@ -652,6 +652,15 @@ export function computeLiveWorkspaceEvaluation(
       `Sequence of Returns Invariant: Goal matures in ${h} yr (<= 12 months). Any equity exposure (${activeAllocation.equityPct}%) risks terminal drawdown before payout.`
     );
   }
+  if (
+    typeof folio.customEquityOverridePct === 'number' &&
+    folio.customEquityOverridePct >= 85 &&
+    baseAllocation.equityPct < 85
+  ) {
+    regulatoryViolationsIntercepted.push(
+      `SEBI Reg 17 Assertion A4 (Unsubstantiated Speculative Override): Manual equity override (${activeAllocation.equityPct}%) exceeds the fiduciarily evaluated suitability ceiling (${baseAllocation.equityPct}%). Fiduciary rules forbid unverified aggressive risk overrides.`
+    );
+  }
 
   // 9. Goal Inflation & Flat vs Step-Up SIP Math
   const appliedInflationPct = GOAL_INFLATION_MAP[folio.goalCategory].ratePct;

@@ -16,6 +16,7 @@ import {
   ClientFolioRecord,
   INITIAL_CLIENT_FOLIOS,
 } from './services/localQuantEngine';
+import { apiUrl } from './services/apiConfig';
 import {
   getFirebaseAuth,
   onAuthStateChanged,
@@ -78,7 +79,7 @@ export default function App() {
   const syncFolioToBackend = async (folio: ClientFolioRecord) => {
     if (!currentUser) return;
     try {
-      await fetch(`/api/v1/folios/${currentUser.uid}`, {
+      await fetch(apiUrl(`/api/v1/folios/${currentUser.uid}`), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(folio),
@@ -114,7 +115,7 @@ export default function App() {
   const handleClearAllFolios = () => {
     persistUserFolios([]);
     if (currentUser) {
-      fetch(`/api/v1/folios/${currentUser.uid}`, { method: 'DELETE' }).catch(
+      fetch(apiUrl(`/api/v1/folios/${currentUser.uid}`), { method: 'DELETE' }).catch(
         () => {}
       );
     }

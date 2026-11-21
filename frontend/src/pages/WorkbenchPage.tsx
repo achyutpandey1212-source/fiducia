@@ -13,6 +13,7 @@ import {
   computeLiveWorkspaceEvaluation,
   formatInrCompact,
 } from '../services/localQuantEngine';
+import { apiUrl } from '../services/apiConfig';
 import {
   getFirebaseAuth,
   onAuthStateChanged,
@@ -260,7 +261,7 @@ export default function WorkbenchPage({
       // Sync immutable SHA-256 signature with backend WORM audit ledger (Phase 4)
       const uid = firebaseUser?.uid || 'adviser_default';
       try {
-        const res = await fetch(`/api/v1/folios/${uid}/${cleanFolio.id}/sign`, {
+        const res = await fetch(apiUrl(`/api/v1/folios/${uid}/${cleanFolio.id}/sign`), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -303,7 +304,7 @@ export default function WorkbenchPage({
 
     setRagLoading(true);
     try {
-      const res = await fetch('/api/v1/rag/query', {
+      const res = await fetch(apiUrl('/api/v1/rag/query'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query: q }),
@@ -500,11 +501,24 @@ export default function WorkbenchPage({
 
           {activeFolio && evaluation && (
             <>
+              {evaluation.isHardQuarantineTriggered && (
+                <span className="px-2.5 py-0.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-400 text-[11px] font-mono flex items-center gap-1 animate-pulse">
+                  <AlertCircle className="w-3 h-3 text-red-400" />
+                  <span>HTTP 403 Quarantine Active</span>
+                </span>
+              )}
+
               <button
                 type="button"
                 onClick={handleApplyClampAndSign}
                 disabled={signingInProgress}
-                className="ag-btn-blue px-3.5 py-1 rounded-full text-[12px] font-medium flex items-center gap-1.5 shadow-sm"
+                className={`px-3.5 py-1 rounded-full text-[12px] font-medium flex items-center gap-1.5 shadow-sm transition ${
+                  evaluation.isHardQuarantineTriggered
+                    ? 'ag-btn-blue'
+                    : isSignedAndValid
+                    ? 'bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30'
+                    : 'ag-btn-blue'
+                }`}
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>
@@ -1136,20 +1150,22 @@ export default function WorkbenchPage({
                     </ol>
 
                     {evaluation.isHardQuarantineTriggered && (
-                      <div className="ag-panel-card p-3.5 flex flex-wrap items-center justify-between gap-4 text-[12.5px]">
+                      <div className="ag-panel-card p-3.5 flex flex-wrap items-center justify-between gap-4 text-[12.5px] border border-red-500/40 bg-red-500/10">
                         <div className="flex items-start gap-2.5 text-[#9DA3AE] flex-1 min-w-[220px]">
-                          <AlertCircle className="w-4 h-4 text-[#F59E0B] shrink-0 mt-0.5" />
+                          <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
                           <div>
-                            <span className="text-white font-medium">
-                              Suitability Hold:{' '}
+                            <span className="text-red-400 font-semibold font-mono text-[11px] block uppercase mb-0.5">
+                              HTTP 403 Regulatory Quarantine Barrier Engaged
                             </span>
-                            {evaluation.regulatoryViolationsIntercepted[0]}
+                            <span className="text-white font-medium">
+                              {evaluation.regulatoryViolationsIntercepted[0]}
+                            </span>
                           </div>
                         </div>
                         <button
                           type="button"
                           onClick={handleApplyClampAndSign}
-                          className="ag-btn-blue shrink-0 px-3.5 py-1.5 rounded-full text-[12px] font-medium flex items-center gap-1.5"
+                          className="ag-btn-blue shrink-0 px-3.5 py-1.5 rounded-full text-[12px] font-medium flex items-center gap-1.5 shadow-md"
                         >
                           <RotateCcw className="w-3.5 h-3.5" />
                           <span>Restore Limit &amp; Sign</span>
