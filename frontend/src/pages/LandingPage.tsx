@@ -42,6 +42,59 @@ export default function LandingPage({ currentUser }: LandingPageProps) {
   const [clientCount, setClientCount] = useState<number>(450);
   const [annualAdvisoryFeeInr, setAnnualAdvisoryFeeInr] = useState<number>(15000);
 
+  // Interactive Live Browser Audit Screenshot Showcase
+  const [activeShotIndex, setActiveShotIndex] = useState<number>(1);
+  const auditScreenshots = [
+    {
+      id: 'shot1',
+      title: '1. Fresh Session',
+      badge: 'Zero-State Cockpit',
+      filename: '/previews/audit_shot1_workbench_initial.png',
+      caption: 'Clean, distraction-free RIA workspace ready for manual intake or instant portfolio loading.',
+      detail: 'SEBI IA Reg 15 compliance monitor active with instant zero-latency V8 quantitative calculators.'
+    },
+    {
+      id: 'shot2',
+      title: '2. Loaded Cockpit',
+      badge: 'Adviser Workbench',
+      filename: '/previews/audit_shot2_sample_folios_loaded.png',
+      caption: 'Active household portfolio management across multiple families with real-time health diagnostics.',
+      detail: 'Left Folio Navigator, Center Quantitative Stress-Test Sliders, and Right Real-Time Fiduciary Ledger.'
+    },
+    {
+      id: 'shot3',
+      title: '3. HTTP 403 Circuit Breaker',
+      badge: 'Regulatory Quarantine',
+      filename: '/previews/audit_shot3_quarantine_engaged.png',
+      caption: 'Instant hard-block when an unfeasible or speculative equity allocation violates fiduciary safety.',
+      detail: 'System actively disengages PDF signing and locks client exports with clear corrective guidelines.'
+    },
+    {
+      id: 'shot4',
+      title: '4. Fiduciary SHA-256 Seal',
+      badge: 'Signed & Certified',
+      filename: '/previews/audit_shot4_restored_and_signed.png',
+      caption: 'Tamper-evident SHA-256 cryptographic seal generated once the allocation satisfies SEBI IA mandates.',
+      detail: 'Full audit trail with timestamp, adviser certificate hash, and immutable portfolio rationale.'
+    },
+    {
+      id: 'shot5',
+      title: '5. Inflation Shield Bridge',
+      badge: '8.5% Higher Education',
+      filename: '/previews/audit_shot5_priya_mehta_bridge.png',
+      caption: 'Higher-education specific inflation modeling (8.5% p.a.) preventing ₹25L+ child fund shortfalls.',
+      detail: 'Dynamic equity-to-liquid glidepath automatically protecting capital during final years.'
+    },
+    {
+      id: 'shot6',
+      title: '6. A4 Audit Dossier',
+      badge: 'SEBI-Ready Export',
+      filename: '/previews/audit_shot6_dossier_modal.png',
+      caption: 'Full statutory suitability report with direct mutual fund scheme ISINs, TER savings, and disclaimers.',
+      detail: 'Ready for digital sign-off and instant PDF printing for client meetings and regulatory audits.'
+    }
+  ];
+
   const manualHoursPerYear = Math.round(clientCount * 4.5);
   const fiduciaHoursPerYear = Math.round((clientCount * 12) / 60);
   const hoursSavedPerYear = manualHoursPerYear - fiduciaHoursPerYear;
@@ -280,24 +333,77 @@ export default function LandingPage({ currentUser }: LandingPageProps) {
           </span>
         </div>
 
-        {/* INSTANT VISUAL CLARITY: Embedded Interactive Preview of the 3-Pane Workspace */}
+        {/* INSTANT VISUAL CLARITY: Live Automated Audit & Cockpit Tour */}
         <div className="shery-hero-preview shery-parallax-window ag-panel-card overflow-hidden shadow-2xl">
-          {/* Window Title Bar */}
-          <div className="ag-panel-header px-4 py-2.5 flex items-center justify-between text-xs text-[#9DA3AE]">
+          {/* Window Title Bar with interactive scenario tabs */}
+          <div className="ag-panel-header px-4 py-2.5 flex flex-wrap items-center justify-between text-xs text-[#9DA3AE] gap-3 border-b border-[#262A34]">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-[#323642]" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#323642]" />
-              <span className="w-2.5 h-2.5 rounded-full bg-[#323642]" />
-              <span className="ml-2 font-mono text-[11px] text-white">
-                Fiducia / Client Dossier / Rohit Sharma — Child Higher Education Plan
+              <span className="w-2.5 h-2.5 rounded-full bg-[#EA4335]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#FBBC05]" />
+              <span className="w-2.5 h-2.5 rounded-full bg-[#34A853]" />
+              <span className="ml-2 font-mono text-[11px] text-white hidden sm:inline">
+                Live RIA Platform Audit (Verified V8 Engine)
               </span>
+            </div>
+            <div className="flex items-center gap-1.5 overflow-x-auto py-1">
+              {auditScreenshots.map((shot, idx) => (
+                <button
+                  key={shot.id}
+                  onClick={() => setActiveShotIndex(idx)}
+                  className={`px-3 py-1 rounded-md text-xs font-medium transition ${
+                    activeShotIndex === idx
+                      ? 'bg-[#1A73E8] text-white shadow-sm font-semibold'
+                      : 'bg-[#181B21] text-[#9DA3AE] hover:text-white hover:bg-[#262A34]'
+                  }`}
+                >
+                  {shot.title}
+                </button>
+              ))}
             </div>
             <Link
               to={primaryDestination}
-              className="text-[11px] text-[#8AB4F8] hover:underline font-medium"
+              className="text-[11px] text-[#8AB4F8] hover:underline font-medium ml-auto sm:ml-0"
             >
-              {currentUser ? 'Open in Workspace →' : 'Sign in to access Workspace →'}
+              {currentUser ? 'Open in Workspace →' : 'Launch Workspace Demo →'}
             </Link>
+          </div>
+
+          {/* High-Fidelity Active Screenshot View with Context Overlay */}
+          <div className="relative bg-[#0A0C0E] border-b border-[#282C37]">
+            <div className="overflow-hidden max-h-[580px] flex items-center justify-center bg-black/40">
+              <img
+                src={auditScreenshots[activeShotIndex].filename}
+                alt={auditScreenshots[activeShotIndex].title}
+                className="w-full h-auto object-cover object-top border-b border-[#282C37]/50 transition-all duration-300"
+              />
+            </div>
+
+            {/* Context Badge on Screenshot */}
+            <div className="absolute top-4 left-4 bg-[#0D0E11]/90 backdrop-blur-md border border-[#282C37] px-3.5 py-1.5 rounded-lg flex items-center gap-2.5 shadow-xl">
+              <span className="w-2 h-2 rounded-full bg-[#34A853] animate-pulse" />
+              <span className="font-mono text-xs text-white font-medium">
+                {auditScreenshots[activeShotIndex].badge}
+              </span>
+              <span className="text-[10px] text-[#8AB4F8] font-mono">
+                [60fps V8 Quant Math]
+              </span>
+            </div>
+
+            {/* Bottom Caption Pill */}
+            <div className="p-4 bg-[#131519] border-t border-[#262A34] flex flex-col md:flex-row items-start md:items-center justify-between gap-2">
+              <div>
+                <p className="text-sm font-medium text-white">
+                  {auditScreenshots[activeShotIndex].caption}
+                </p>
+                <p className="text-xs text-[#9DA3AE] mt-0.5">
+                  {auditScreenshots[activeShotIndex].detail}
+                </p>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-[#8AB4F8] font-mono shrink-0">
+                <span>Verified in Chrome Headless Audit</span>
+                <ShieldCheck className="w-4 h-4 text-[#34A853]" />
+              </div>
+            </div>
           </div>
 
           {/* 3-Column Visual Anatomy proving what the product does at first glance */}
