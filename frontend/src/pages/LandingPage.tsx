@@ -20,9 +20,10 @@ import {
   FileText,
   Lock,
   TrendingUp,
+  LogOut,
 } from 'lucide-react';
 import { formatInrCompact } from '../services/localQuantEngine';
-import { User } from '../services/firebaseClient';
+import { User, getFirebaseAuth, signOut } from '../services/firebaseClient';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -156,13 +157,27 @@ export default function LandingPage({ currentUser }: LandingPageProps) {
         </nav>
 
         <div className="flex items-center gap-3">
-          {!currentUser && (
+          {!currentUser ? (
             <Link
               to="/auth"
               className="text-xs text-[#9DA3AE] hover:text-white px-3 py-1.5 transition"
             >
               Adviser Sign In
             </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={async () => {
+                const auth = getFirebaseAuth();
+                if (auth) await signOut(auth);
+                window.location.reload();
+              }}
+              className="text-xs text-[#9DA3AE] hover:text-red-400 px-2.5 py-1.5 transition flex items-center gap-1.5"
+              title="Sign Out of current session"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
+            </button>
           )}
           <Link
             to={primaryDestination}
@@ -233,13 +248,27 @@ export default function LandingPage({ currentUser }: LandingPageProps) {
             <ArrowRight className="w-4 h-4" />
           </Link>
 
-          {!currentUser && (
+          {!currentUser ? (
             <Link
               to="/auth"
               className="ag-soft-pill px-6 py-3.5 rounded-full text-sm font-medium"
             >
               Sign In to Adviser Portal
             </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={async () => {
+                const auth = getFirebaseAuth();
+                if (auth) await signOut(auth);
+                window.location.reload();
+              }}
+              className="ag-soft-pill px-5 py-3.5 rounded-full text-sm font-medium text-[#9DA3AE] hover:text-red-400 transition flex items-center gap-2"
+              title="Sign Out of current session"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>Sign Out</span>
+            </button>
           )}
 
           <span className="font-caveat text-xl text-[#8AB4F8] ml-1">

@@ -36,6 +36,8 @@ import {
   ShieldCheck,
   Sparkles,
   Database,
+  LogOut,
+  ChevronUp,
 } from 'lucide-react';
 import {
   ClientDossierBody,
@@ -113,6 +115,25 @@ export default function WorkbenchPage({
   const [inspectorSearch, setInspectorSearch] = useState<string>('');
   const [copiedSeal, setCopiedSeal] = useState<boolean>(false);
   const [showDossierModal, setShowDossierModal] = useState<boolean>(false);
+  const [showSettingsPopover, setShowSettingsPopover] = useState<boolean>(false);
+  const settingsPopoverRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        settingsPopoverRef.current &&
+        !settingsPopoverRef.current.contains(event.target as Node)
+      ) {
+        setShowSettingsPopover(false);
+      }
+    }
+    if (showSettingsPopover) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showSettingsPopover]);
 
   const [firebaseUser, setFirebaseUser] = useState<User | null>(null);
   const sebiRegNo =
@@ -669,37 +690,103 @@ export default function WorkbenchPage({
                 </div>
               </div>
 
-              {/* Adviser Profile Link */}
+              {/* Adviser Profile & Settings Popover Anchor */}
               <div
-                className="p-2.5 flex items-center justify-between text-[12px] text-[#9DA3AE]"
+                ref={settingsPopoverRef}
+                className="relative p-2.5"
                 style={{ borderTop: '1px solid rgba(255, 255, 255, 0.09)' }}
               >
-                <Link
-                  to="/auth"
-                  className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-[#1E2129] hover:text-white transition truncate"
-                >
-                  <Settings className="w-3.5 h-3.5 text-[#636870] shrink-0" />
-                  <span className="truncate">
-                    {firebaseUser
-                      ? firebaseUser.isAnonymous
-                        ? `Adviser (${sebiRegNo})`
-                        : firebaseUser.email
-                      : `Adviser (${sebiRegNo})`}
-                  </span>
-                </Link>
-                {firebaseUser && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      const auth = getFirebaseAuth();
-                      if (auth) await signOut(auth);
-                      navigate('/auth');
-                    }}
-                    className="text-[11px] text-[#636870] hover:text-white px-1.5"
+                {/* Antigravity Settings Popover Menu */}
+                {showSettingsPopover && (
+                  <div
+                    className="absolute bottom-full left-2 mb-2 w-64 bg-[#181B21] border border-[#2B303C] rounded-xl shadow-2xl p-3 z-50 animate-in fade-in zoom-in-95 duration-150"
+                    style={{ backdropFilter: 'blur(16px)' }}
                   >
-                    Out
-                  </button>
+                    <div className="flex items-center gap-2.5 pb-2.5 border-b border-[#262A34]">
+                      <div className="w-8 h-8 rounded-full bg-[#1A73E8]/20 border border-[#1A73E8]/40 flex items-center justify-center text-[#8AB4F8] font-bold text-xs shrink-0">
+                        {firebaseUser?.email ? firebaseUser.email[0].toUpperCase() : 'RIA'}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-xs font-semibold text-white truncate">
+                          {firebaseUser?.isAnonymous
+                            ? 'Guest Adviser Session'
+                            : firebaseUser?.email || 'Licensed Adviser'}
+                        </div>
+                        <div className="text-[10px] text-[#8AB4F8] flex items-center gap-1 mt-0.5">
+                          <ShieldCheck className="w-3 h-3 text-[#1A73E8]" />
+                          <span>SEBI Reg: {sebiRegNo}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="py-2 space-y-1 text-xs">
+                      <div className="px-2 py-1.5 rounded-md bg-[#131519] border border-[#20232B] text-[11px] text-[#9DA3AE]">
+                        <span className="text-[#636870] block text-[10px] uppercase font-mono">Fiduciary Compliance</span>
+                        SEBI IA Reg 15, 16 & 17 Active
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShowSettingsPopover(false);
+                          onClearAllFolios();
+                        }}
+                        className="w-full text-left px-2 py-1.5 rounded hover:bg-[#20242D] text-[#9DA3AE] hover:text-white transition flex items-center justify-between text-xs"
+                      >
+                        <span>Clear All Folios</span>
+                        <RotateCcw className="w-3 h-3 text-[#636870]" />
+                      </button>
+                    </div>
+
+                    <div className="pt-2 border-t border-[#262A34]">
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          setShowSettingsPopover(false);
+                          const auth = getFirebaseAuth();
+                          if (auth) await signOut(auth);
+                          navigate('/auth');
+                        }}
+                        className="w-full text-left px-2 py-1.5 rounded hover:bg-red-500/10 text-red-400 hover:text-red-300 transition flex items-center gap-2 text-xs font-medium"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Log Out of Workspace</span>
+                      </button>
+                    </div>
+                  </div>
                 )}
+
+                {/* Adviser Trigger Pill */}
+                <button
+                  type="button"
+                  onClick={() => setShowSettingsPopover(!showSettingsPopover)}
+                  className={`w-full flex items-center justify-between px-2 py-1.5 rounded-lg transition text-left text-xs ${
+                    showSettingsPopover
+                      ? 'bg-[#1E2129] text-white'
+                      : 'text-[#9DA3AE] hover:bg-[#1E2129] hover:text-white'
+                  }`}
+                  title="Adviser Profile & Settings (Click to view session & Log Out)"
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <Settings
+                      className={`w-3.5 h-3.5 shrink-0 transition-transform ${
+                        showSettingsPopover ? 'rotate-90 text-[#1A73E8]' : 'text-[#636870]'
+                      }`}
+                    />
+                    <span className="truncate text-[11.5px]">
+                      {firebaseUser
+                        ? firebaseUser.isAnonymous
+                          ? `Adviser (${sebiRegNo})`
+                          : firebaseUser.email
+                        : `Adviser (${sebiRegNo})`}
+                    </span>
+                  </div>
+                  <ChevronUp
+                    className={`w-3.5 h-3.5 text-[#636870] shrink-0 transition-transform ${
+                      showSettingsPopover ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
               </div>
             </aside>
 
