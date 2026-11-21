@@ -614,6 +614,40 @@ export function computeLiveWorkspaceEvaluation(
     baseAllocation = { equityPct: 50, debtPct: 40, liquidArbitragePct: 10, goldPct: 0 };
   }
 
+  // Pre-allocation Fiduciary Invariant: Emergency Runway under 2 months clamps base equity to 30%
+  if (runwayMonths < 2.0 && baseAllocation.equityPct > 30) {
+    const excess = baseAllocation.equityPct - 30;
+    baseAllocation = {
+      equityPct: 30,
+      debtPct: baseAllocation.debtPct,
+      liquidArbitragePct: baseAllocation.liquidArbitragePct + excess,
+      goldPct: baseAllocation.goldPct,
+    };
+    riskCategoryLabel = 'Liquidity-Constrained Safe Anchor';
+  }
+
+  // Pre-allocation Fiduciary Invariant: DTI over 50% clamps base equity to 10%
+  if (dtiRatio > 0.50 && baseAllocation.equityPct > 10) {
+    const excess = baseAllocation.equityPct - 10;
+    baseAllocation = {
+      equityPct: 10,
+      debtPct: baseAllocation.debtPct,
+      liquidArbitragePct: baseAllocation.liquidArbitragePct + excess,
+      goldPct: baseAllocation.goldPct,
+    };
+  }
+
+  // Pre-allocation Fiduciary Invariant: Senior Citizen (>= 60) clamps base equity to 30%
+  if (folio.clientAge >= 60 && baseAllocation.equityPct > 30) {
+    const excess = baseAllocation.equityPct - 30;
+    baseAllocation = {
+      equityPct: 30,
+      debtPct: baseAllocation.debtPct + excess,
+      liquidArbitragePct: baseAllocation.liquidArbitragePct,
+      goldPct: baseAllocation.goldPct,
+    };
+  }
+
   // 8. Check Regulatory Assertions & Optional Manual Equity Slider Override
   const regulatoryViolationsIntercepted: string[] = [];
   let activeAllocation = { ...baseAllocation };

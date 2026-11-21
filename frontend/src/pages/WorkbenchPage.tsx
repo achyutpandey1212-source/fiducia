@@ -292,6 +292,9 @@ export default function WorkbenchPage({
         signedAtUtc: signedTimestampUtc,
         riaSebiRegistration: sebiRegNo,
       });
+
+      // Automatically launch the signed client dossier modal upon successful sign-off
+      setShowDossierModal(true);
     } finally {
       setSigningInProgress(false);
     }
